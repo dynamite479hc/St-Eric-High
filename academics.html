@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Academics — St. Eric High School</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--navy-900:#0c2540;--navy-800:#123457;--navy-700:#1a4470;--cyan:#2fa8d9;--gold:#f2ac3c;--gold-dark:#d98f22;
+    --bg:#ffffff;--panel:#f7f9fb;--ink:#12202f;--ink-soft:#64758a;--line:#e6ebf1;box-sizing:border-box}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-padding-top:env(safe-area-inset-top,0px)}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;
+    padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  h1,h2,h3,.brand{font-family:'Poppins',system-ui,sans-serif}
+  img{max-width:100%;display:block;width:100%;height:100%;object-fit:cover}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+  header{position:sticky;top:0;z-index:50;padding-top:env(safe-area-inset-top,0px);background:#fff;border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:20px}
+  .brand-block{display:flex;align-items:center;gap:12px}
+  .crest{width:40px;height:40px;border-radius:50%;overflow:hidden;flex:none;background:var(--panel)}
+  .brand{color:var(--navy-900);font-size:15.5px;font-weight:700;line-height:1.15}
+  .brand small{display:block;font-weight:500;font-size:10.5px;letter-spacing:.06em;color:var(--ink-soft)}
+  nav.links{display:flex;gap:26px;font-size:14.5px;font-weight:500}
+  nav.links a.active{color:var(--navy-700);border-bottom:2px solid var(--navy-700);padding-bottom:18px}
+  nav.links a:hover{color:var(--navy-700)}
+  .learn-link{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--navy-700);border:1px solid var(--line);padding:6px 12px;border-radius:20px}
+  .menu-btn{display:none;background:none;border:1px solid var(--line);padding:7px 10px;border-radius:8px;font-size:18px}
+  @media (max-width:880px){nav.links{display:none}.menu-btn{display:block}}
+
+  .page-hero{position:relative;overflow:hidden;min-height:190px;display:flex;align-items:flex-end}
+  .page-hero img{position:absolute;inset:0}
+  .page-hero::before{content:"";position:absolute;inset:0;background:linear-gradient(100deg,rgba(10,30,54,.88),rgba(10,30,54,.55));z-index:1}
+  .page-hero .wrap{position:relative;z-index:2;padding-bottom:26px}
+  .crumb{font-size:12px;color:#9fb4c9;margin-bottom:8px}
+  .page-hero h1{color:#fff;font-size:30px;font-weight:800}
+  .page-hero p{color:#d8e3ee;font-size:13.5px;margin-top:6px}
+
+  .tabs-layout{display:grid;grid-template-columns:250px 1fr;gap:32px;padding:44px 0 64px}
+  @media (max-width:820px){.tabs-layout{grid-template-columns:1fr}}
+  .tab-nav{display:flex;flex-direction:column;gap:6px}
+  .tab-btn{text-align:left;padding:12px 16px;border-radius:8px;border:1px solid var(--line);background:#fff;
+    font-size:13.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;font-family:'Inter'}
+  .tab-btn.active{background:var(--navy-700);color:#fff;border-color:var(--navy-700)}
+  .panel{display:none}
+  .panel.active{display:block;animation:fade .2s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .panel h2{font-size:22px;margin-bottom:14px;color:var(--navy-900)}
+  .panel p{color:var(--ink-soft);font-size:14.5px;margin-bottom:12px}
+  ul.list{margin-left:18px;color:var(--ink-soft);font-size:14.5px}
+  ul.list li{margin-bottom:8px}
+  .dept-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media (max-width:700px){.dept-grid{grid-template-columns:1fr 1fr}}
+  .dept{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;font-size:13.5px;font-weight:600;
+    display:flex;align-items:center;gap:10px}
+  table.cal{width:100%;border-collapse:collapse;font-size:14px}
+  table.cal th{text-align:left;color:var(--ink-soft);font-size:12px;text-transform:uppercase;padding:8px 6px;border-bottom:1px solid var(--line)}
+  table.cal td{padding:10px 6px;border-bottom:1px solid var(--line)}
+
+  footer{background:var(--navy-900);color:#cfe0ee;padding:52px 0 24px}
+  .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:32px}
+  @media (max-width:820px){.foot-grid{grid-template-columns:1fr 1fr}}
+  footer h4{color:#fff;font-size:13.5px;margin-bottom:13px}
+  footer li{list-style:none;margin-bottom:8px;font-size:13px;color:#9fb4c9}
+  footer .tagline{font-size:12.5px;font-style:italic;color:#7fb8dd;margin-top:10px}
+  .foot-bottom{margin-top:36px;padding-top:18px;border-top:1px solid #1e3a5c;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:12px;color:#7f95a9}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <div class="brand-block">
+      <div class="crest"><img src="assets/logo.png" alt="St. Eric High School logo"></div>
+      <div class="brand">ST. ERIC<br><small>HIGH SCHOOL</small></div>
+    </div>
+    <nav class="links">
+      <a href="index.html">Home</a>
+      <a href="about.html">About Us</a>
+      <a class="active" href="academics.html">Academics</a>
+      <a href="admissions.html">Admissions</a>
+      <a href="student-life.html">Student Life</a>
+      <a href="news-events.html">News &amp; Events</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:12px">
+      <a class="learn-link" href="#">📘 Learning Hub</a>
+      <button class="menu-btn" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <img src="assets/academics-hero.jpg" alt="St. Eric High School classrooms">
+  <div class="wrap">
+    <div class="crumb">Home / Academics</div>
+    <h1>Academics</h1>
+    <p>Striving for excellence in every subject.</p>
+  </div>
+</section>
+
+<div class="wrap tabs-layout">
+  <div class="tab-nav">
+    <button class="tab-btn active" data-target="p-dept">Departments</button>
+    <button class="tab-btn" data-target="p-subjects">Subjects</button>
+    <button class="tab-btn" data-target="p-olevel">O-Level</button>
+    <button class="tab-btn" data-target="p-calendar">Academic Calendar</button>
+  </div>
+
+  <div>
+    <div class="panel active" id="p-dept">
+      <h2>Our Departments</h2>
+      <p>Each department is led by experienced staff dedicated to helping students grow in their chosen fields.</p>
+      <div class="dept-grid">
+        <div class="dept">📐 Mathematics</div>
+        <div class="dept">🔬 Science</div>
+        <div class="dept">🌍 Languages</div>
+        <div class="dept">📖 Humanities</div>
+        <div class="dept">📊 Business Studies</div>
+        <div class="dept">💻 Technical &amp; Applied</div>
+      </div>
+    </div>
+
+    <div class="panel" id="p-subjects">
+      <h2>Subjects Offered</h2>
+      <p><strong>O-Level:</strong></p>
+      <ul class="list">
+        <li>Mathematics, English, Combined Science</li>
+        <li>Shona, Heritage Studies, Business Studies</li>
+        <li>Computer Science / Technology, Accounts</li>
+      </ul>
+      <p><strong>A-Level:</strong></p>
+      <ul class="list">
+        <li>Pure Mathematics, Physics, Chemistry, Biology</li>
+        <li>Business Studies, Accounting, Economics</li>
+        <li>Geography, Divinity, Computer Science</li>
+      </ul>
+    </div>
+
+    <div class="panel" id="p-olevel">
+      <h2>O-Level Programme</h2>
+      <p>Our O-Level programme runs from Form 1 to Form 4, building a strong foundation across sciences, languages, commerce and technology before students choose their A-Level specialization.</p>
+      <ul class="list">
+        <li>Form 1–2: Broad foundation subjects</li>
+        <li>Form 3–4: Subject specialization ahead of O-Level examinations</li>
+        <li>Continuous assessment alongside end-of-term examinations</li>
+      </ul>
+    </div>
+
+    <div class="panel" id="p-calendar">
+      <h2>Academic Calendar</h2>
+      <table class="cal">
+        <tr><th>Term</th><th>Opens</th><th>Closes</th></tr>
+        <tr><td>Term 1</td><td>13 Jan 2026</td><td>10 Apr 2026</td></tr>
+        <tr><td>Term 2</td><td>05 May 2026</td><td>31 Jul 2026</td></tr>
+        <tr><td>Term 3</td><td>08 Sep 2026</td><td>27 Nov 2026</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap foot-grid">
+    <div>
+      <div class="brand-block" style="margin-bottom:10px">
+        <div class="crest"><img src="assets/logo.png" alt="St. Eric High School logo"></div>
+        <div class="brand" style="color:#fff">ST. ERIC<br><small>HIGH SCHOOL</small></div>
+      </div>
+      <div class="tagline">Excellence in Education, Faith &amp; Community</div>
+    </div>
+    <div><h4>Quick Links</h4><ul><li>About Us</li><li>Academics</li><li>Admissions</li><li>News &amp; Events</li><li>Contact</li></ul></div>
+    <div><h4>Community</h4><ul><li>Clubs &amp; Robotics</li><li>Learning Hub</li><li>Student Life</li><li>Gallery</li></ul></div>
+    <div><h4>Contact</h4><ul><li>19 St. Eric Road, Tynwald, Harare</li><li>+263 4 779 129 / 0772 123 456</li><li>info@stelichigh.org</li></ul></div>
+  </div>
+  <div class="wrap foot-bottom">
+    <span>© 2026 St. Eric High School. All rights reserved.</span>
+    <span>Privacy Policy · Terms of Service</span>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.target).classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

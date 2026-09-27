@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>About Us — St. Eric High School</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--navy-900:#0c2540;--navy-800:#123457;--navy-700:#1a4470;--cyan:#2fa8d9;--gold:#f2ac3c;--gold-dark:#d98f22;
+    --bg:#ffffff;--panel:#f7f9fb;--ink:#12202f;--ink-soft:#64758a;--line:#e6ebf1;box-sizing:border-box}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-padding-top:env(safe-area-inset-top,0px)}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;
+    padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  h1,h2,h3,.brand{font-family:'Poppins',system-ui,sans-serif}
+  img{max-width:100%;display:block;width:100%;height:100%;object-fit:cover}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+  header{position:sticky;top:0;z-index:50;padding-top:env(safe-area-inset-top,0px);background:#fff;border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:20px}
+  .brand-block{display:flex;align-items:center;gap:12px}
+  .crest{width:40px;height:40px;border-radius:50%;overflow:hidden;flex:none;background:var(--panel)}
+  .brand{color:var(--navy-900);font-size:15.5px;font-weight:700;line-height:1.15}
+  .brand small{display:block;font-weight:500;font-size:10.5px;letter-spacing:.06em;color:var(--ink-soft)}
+  nav.links{display:flex;gap:26px;font-size:14.5px;font-weight:500}
+  nav.links a.active{color:var(--navy-700);border-bottom:2px solid var(--navy-700);padding-bottom:18px}
+  nav.links a:hover{color:var(--navy-700)}
+  .learn-link{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--navy-700);border:1px solid var(--line);padding:6px 12px;border-radius:20px}
+  .menu-btn{display:none;background:none;border:1px solid var(--line);padding:7px 10px;border-radius:8px;font-size:18px}
+  @media (max-width:880px){nav.links{display:none}.menu-btn{display:block}}
+
+  .page-hero{position:relative;overflow:hidden;min-height:190px;display:flex;align-items:flex-end}
+  .page-hero img{position:absolute;inset:0}
+  .page-hero::before{content:"";position:absolute;inset:0;background:linear-gradient(100deg,rgba(10,30,54,.88),rgba(10,30,54,.55));z-index:1}
+  .page-hero .wrap{position:relative;z-index:2;padding-bottom:26px}
+  .crumb{font-size:12px;color:#9fb4c9;margin-bottom:8px}
+  .page-hero h1{color:#fff;font-size:30px;font-weight:800}
+  .page-hero p{color:#d8e3ee;font-size:13.5px;margin-top:6px}
+
+  .tabs-layout{display:grid;grid-template-columns:250px 1fr;gap:32px;padding:44px 0 64px}
+  @media (max-width:820px){.tabs-layout{grid-template-columns:1fr}}
+  .tab-nav{display:flex;flex-direction:column;gap:6px}
+  .tab-btn{text-align:left;padding:12px 16px;border-radius:8px;border:1px solid var(--line);background:#fff;
+    font-size:13.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;font-family:'Inter'}
+  .tab-btn.active{background:var(--navy-700);color:#fff;border-color:var(--navy-700)}
+  .panel{display:none}
+  .panel.active{display:block;animation:fade .2s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .panel h2{font-size:22px;margin-bottom:14px;color:var(--navy-900)}
+  .panel p{color:var(--ink-soft);font-size:14.5px;margin-bottom:12px}
+  .two-col{display:grid;grid-template-columns:1.3fr .8fr;gap:30px;align-items:start}
+  @media (max-width:700px){.two-col{grid-template-columns:1fr}}
+  .side-img{border-radius:12px;aspect-ratio:4/3;overflow:hidden}
+  ul.list{margin-left:18px;color:var(--ink-soft);font-size:14.5px}
+  ul.list li{margin-bottom:8px}
+  .leader-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media (max-width:700px){.leader-grid{grid-template-columns:1fr 1fr}}
+  .leader{text-align:center}
+  .leader .ph{aspect-ratio:1/1;border-radius:50%;overflow:hidden;margin-bottom:10px}
+  .leader h3{font-size:14px}
+  .leader span{font-size:12px;color:var(--ink-soft)}
+
+  footer{background:var(--navy-900);color:#cfe0ee;padding:52px 0 24px}
+  .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:32px}
+  @media (max-width:820px){.foot-grid{grid-template-columns:1fr 1fr}}
+  footer h4{color:#fff;font-size:13.5px;margin-bottom:13px}
+  footer li{list-style:none;margin-bottom:8px;font-size:13px;color:#9fb4c9}
+  footer .tagline{font-size:12.5px;font-style:italic;color:#7fb8dd;margin-top:10px}
+  .foot-bottom{margin-top:36px;padding-top:18px;border-top:1px solid #1e3a5c;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:12px;color:#7f95a9}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <div class="brand-block">
+      <div class="crest"><img src="assets/logo.png" alt="St. Eric High School logo"></div>
+      <div class="brand">ST. ERIC<br><small>HIGH SCHOOL</small></div>
+    </div>
+    <nav class="links">
+      <a href="index.html">Home</a>
+      <a class="active" href="about.html">About Us</a>
+      <a href="academics.html">Academics</a>
+      <a href="admissions.html">Admissions</a>
+      <a href="student-life.html">Student Life</a>
+      <a href="news-events.html">News &amp; Events</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:12px">
+      <a class="learn-link" href="#">📘 Learning Hub</a>
+      <button class="menu-btn" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <img src="assets/about-hero.jpg" alt="St. Eric High School campus">
+  <div class="wrap">
+    <div class="crumb">Home / About Us</div>
+    <h1>About Us</h1>
+    <p>Our history, vision and values.</p>
+  </div>
+</section>
+
+<div class="wrap tabs-layout">
+  <div class="tab-nav">
+    <button class="tab-btn active" data-target="p-history">Our History</button>
+    <button class="tab-btn" data-target="p-vision">Vision &amp; Mission</button>
+    <button class="tab-btn" data-target="p-leadership">Leadership</button>
+    <button class="tab-btn" data-target="p-staff">Our Staff</button>
+  </div>
+
+  <div>
+    <div class="panel active" id="p-history">
+      <div class="two-col">
+        <div>
+          <h2>Our History</h2>
+          <p>St. Eric High School was founded with a vision to provide quality education rooted in strong Christian values and academic excellence. Over the years, the school has grown into a respected institution known for producing well-rounded, responsible and successful individuals.</p>
+          <p>What began as a small community school has expanded into a full O-Level and A-Level institution, with a growing reputation for academics, sports, the arts, and student-led innovation through programs like our Robotics Club.</p>
+          <a href="history.html" style="display:inline-block;margin-top:6px;font-size:13.5px;font-weight:600;color:var(--navy-700);border:1px solid var(--line);padding:9px 18px;border-radius:20px">Read Our Full History →</a>
+        </div>
+        <div class="side-img"><img src="assets/about-history.jpg" alt="School history"></div>
+      </div>
+    </div>
+
+    <div class="panel" id="p-vision">
+      <h2>Vision &amp; Mission</h2>
+      <p><strong>Vision:</strong> To be a leading centre of academic excellence, faith and community — nurturing confident, capable and compassionate leaders of tomorrow.</p>
+      <p><strong>Mission:</strong> We provide a supportive environment where every student is known, valued and challenged to reach their full potential.</p>
+      <ul class="list">
+        <li>Deliver quality education across O-Level and A-Level programs</li>
+        <li>Build strong moral and spiritual foundations</li>
+        <li>Encourage curiosity through academics, sports, arts and technology</li>
+        <li>Prepare students to be responsible members of their community</li>
+      </ul>
+    </div>
+
+    <div class="panel" id="p-leadership">
+      <h2>Leadership</h2>
+      <p>Meet the team guiding St. Eric High School's mission and daily operations.</p>
+      <div class="leader-grid">
+        <div class="leader"><div class="ph"><img src="assets/leader-head.jpg" alt="Headmaster"></div><h3>Headmaster</h3><span>School Leadership</span></div>
+        <div class="leader"><div class="ph"><img src="assets/leader-deputy.jpg" alt="Deputy Head"></div><h3>Deputy Head</h3><span>Academics</span></div>
+        <div class="leader"><div class="ph"><img src="assets/leader-bursar.jpg" alt="Bursar"></div><h3>Bursar</h3><span>Finance &amp; Admin</span></div>
+      </div>
+    </div>
+
+    <div class="panel" id="p-staff">
+      <h2>Our Staff</h2>
+      <p>St. Eric High School is proud to have a dedicated team of qualified teaching and support staff across every department, committed to helping each student succeed.</p>
+      <ul class="list">
+        <li>Mathematics &amp; Science department staff</li>
+        <li>Languages &amp; Humanities department staff</li>
+        <li>Business Studies &amp; Technical/Applied subjects staff</li>
+        <li>Sports, guidance and pastoral care staff</li>
+      </ul>
+      <a href="staff.html" style="display:inline-block;margin-top:6px;font-size:13.5px;font-weight:600;color:var(--navy-700);border:1px solid var(--line);padding:9px 18px;border-radius:20px">Meet Our Staff →</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap foot-grid">
+    <div>
+      <div class="brand-block" style="margin-bottom:10px">
+        <div class="crest"><img src="assets/logo.png" alt="St. Eric High School logo"></div>
+        <div class="brand" style="color:#fff">ST. ERIC<br><small>HIGH SCHOOL</small></div>
+      </div>
+      <div class="tagline">Excellence in Education, Faith &amp; Community</div>
+    </div>
+    <div><h4>Quick Links</h4><ul><li>About Us</li><li>Academics</li><li>Admissions</li><li>News &amp; Events</li><li>Contact</li></ul></div>
+    <div><h4>Community</h4><ul><li>Clubs &amp; Robotics</li><li><a href="sports.html">Sports</a></li><li><a href="staff.html">Our Staff</a></li><li>Learning Hub</li><li>Student Life</li><li>Gallery</li></ul></div>
+    <div><h4>Contact</h4><ul><li>19 St. Eric Road, Tynwald, Harare</li><li>+263 4 779 129 / 0772 123 456</li><li>info@stelichigh.org</li></ul></div>
+  </div>
+  <div class="wrap foot-bottom">
+    <span>© 2026 St. Eric High School. All rights reserved.</span>
+    <span>Privacy Policy · Terms of Service</span>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.target).classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
