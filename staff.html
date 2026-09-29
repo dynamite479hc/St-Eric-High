@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{--navy-900:#0c2540;--navy-800:#123457;--navy-700:#1a4470;--cyan:#2fa8d9;--gold:#f2ac3c;--gold-dark:#d98f22;
     --bg:#ffffff;--panel:#f7f9fb;--ink:#12202f;--ink-soft:#64758a;--line:#e6ebf1;box-sizing:border-box}
@@ -97,43 +98,7 @@
   <p>Every subject, every club, every well-run day at St. Eric High School is thanks to a dedicated team. We're proud to introduce them here.</p>
 </div>
 
-<div class="wrap dept-block">
-  <h2>Mathematics &amp; Science</h2>
-  <div class="staff-grid">
-    <div class="staff-card"><div class="staff-photo"><img src="assets/staff-1.jpg" alt="Staff member"></div><h3>Staff Name</h3><span>Mathematics</span></div>
-    <div class="staff-card"><div class="staff-photo"><img src="assets/staff-2.jpg" alt="Staff member"></div><h3>Staff Name</h3><span>Physics &amp; Chemistry</span></div>
-    <div class="staff-card"><div class="staff-photo"><img src="assets/staff-3.jpg" alt="Staff member"></div><h3>Staff Name</h3><span>Biology</span></div>
-    <div class="staff-card"><div class="staff-photo"><img src="assets/staff-4.jpg" alt="Staff member"></div><h3>Staff Name</h3><span>Combined Science</span></div>
-  </div>
-</div>
-
-<div class="wrap dept-block">
-  <h2>Languages &amp; Humanities</h2>
-  <div class="staff-grid">
-    <div class="staff-card"><div class="staff-photo"><img src="assets/staff-5.jpg" alt="Staff member"></div><h3>Staff Name</h3><span>English</span></div>
-    <div class="staff-card"><div class="staff-photo"><img src="assets/staff-6.jpg" alt="Staff member"></div><h3>Staff Name</h3><span>Shona &amp; Heritage</span></div>
-    <div class="staff-card"><div class="staff-photo"><img src="assets/staff-7.jpg" alt="Staff member"></div><h3>Staff Name</h3><span>Geography</span></div>
-    <div class="staff-card"><div class="staff-photo"><img src="assets/staff-8.jpg" alt="Staff member"></div><h3>Staff Name</h3><span>Divinity</span></div>
-  </div>
-</div>
-
-<div class="wrap dept-block">
-  <h2>Business Studies &amp; Technical</h2>
-  <div class="staff-grid">
-    <div class="staff-card"><div class="staff-photo"><img src="assets/staff-9.jpg" alt="Staff member"></div><h3>Staff Name</h3><span>Business Studies &amp; Accounts</span></div>
-    <div class="staff-card"><div class="staff-photo"><img src="assets/staff-10.jpg" alt="Staff member"></div><h3>Staff Name</h3><span>Computer Science &amp; Technology</span></div>
-  </div>
-</div>
-
-<div class="wrap dept-block">
-  <h2>Leadership &amp; Support Staff</h2>
-  <div class="staff-grid">
-    <div class="staff-card"><div class="staff-photo"><img src="assets/leader-head.jpg" alt="Headmaster"></div><h3>Headmaster</h3><span>School Leadership</span></div>
-    <div class="staff-card"><div class="staff-photo"><img src="assets/leader-deputy.jpg" alt="Deputy Head"></div><h3>Deputy Head</h3><span>Academics</span></div>
-    <div class="staff-card"><div class="staff-photo"><img src="assets/leader-bursar.jpg" alt="Bursar"></div><h3>Bursar</h3><span>Finance &amp; Admin</span></div>
-    <div class="staff-card"><div class="staff-photo"><img src="assets/staff-11.jpg" alt="Staff member"></div><h3>Staff Name</h3><span>Sports &amp; Guidance</span></div>
-  </div>
-</div>
+<div class="wrap" id="staff-container"><p style="text-align:center;color:var(--ink-soft);padding:30px 0">Loading staff...</p></div>
 
 <footer>
   <div class="wrap foot-grid">
@@ -154,5 +119,30 @@
   </div>
 </footer>
 
+<script src="assets/js/supabase-client.js"></script>
+<script>
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function publicUrl(value){ if(!value) return ''; if(value.startsWith('http')) return value; return sb.storage.from('media').getPublicUrl(value).data.publicUrl; }
+
+async function loadStaff(){
+  const container = document.getElementById('staff-container');
+  const { data, error } = await sb.from('staff').select('*').order('sort_order', { ascending:true });
+  if(error || !data || data.length === 0){ container.innerHTML = '<p style="text-align:center;color:var(--ink-soft);padding:30px 0">Staff listing coming soon.</p>'; return; }
+  const groups = {};
+  data.forEach(s=>{ (groups[s.department] = groups[s.department] || []).push(s); });
+  container.innerHTML = Object.keys(groups).map(dept => `
+    <div class="dept-block">
+      <h2>${escapeHtml(dept)}</h2>
+      <div class="staff-grid">
+        ${groups[dept].map(s => `
+          <div class="staff-card">
+            <div class="staff-photo">${s.photo_path ? `<img src="${publicUrl(s.photo_path)}" alt="${escapeHtml(s.name)}">` : ''}</div>
+            <h3>${escapeHtml(s.name)}</h3><span>${escapeHtml(s.subject || '')}</span>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+loadStaff();
+</script>
 </body>
 </html>

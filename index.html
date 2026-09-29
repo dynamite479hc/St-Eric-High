@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{
     --navy-900:#0c2540; --navy-800:#123457; --navy-700:#1a4470;
@@ -163,9 +164,9 @@
     <img src="assets/hero-campus.jpg" alt="St. Eric High School campus">
     <div class="hero-copy">
       <div class="wrap">
-        <div class="eyebrow">Service &amp; Exallency</div>
-        <h1>St. Eric<br>High School</h1>
-        <p>Excellence in Education, Faith &amp; Community — a place where every learner is known and challenged to reach their full potential.</p>
+        <div class="eyebrow" id="hero-eyebrow">EXCELLENCE IN EDUCATION, FAITH &amp; COMMUNITY</div>
+        <h1 id="hero-title">St. Eric<br>High School</h1>
+        <p id="hero-text">Excellence in Education, Faith &amp; Community — a place where every learner is known and challenged to reach their full potential.</p>
         <a class="cta" href="#">Explore Our School →</a>
       </div>
     </div>
@@ -185,7 +186,7 @@
   <div class="wrap about">
     <div>
       <h2>About St. Eric High School</h2>
-      <p>St. Eric High School is a leading educational institution dedicated to providing quality education, strong moral values, and a supportive environment where every student can reach their full potential.</p>
+      <p id="about-text">St. Eric High School is a leading educational institution dedicated to providing quality education, strong moral values, and a supportive environment where every student can reach their full potential.</p>
       <a class="cta" style="margin-top:20px" href="#">Learn More About Us</a>
     </div>
     <div class="about-art">
@@ -221,34 +222,8 @@
       <div><h2>Latest News</h2></div>
       <a class="view-all" href="#">View All News</a>
     </div>
-    <div class="news-grid">
-      <div class="news-card">
-        <div class="news-thumb"><img src="assets/news-stem-fair.jpg" alt="STEM Fair winners"></div>
-        <div class="body">
-          <span class="tag">School News</span>
-          <h3>STEM Fair Winners Announced</h3>
-          <p>Our students took home top prizes at the annual STEM Fair 2026.</p>
-          <span class="date">📅 12 Apr 2026</span>
-        </div>
-      </div>
-      <div class="news-card">
-        <div class="news-thumb"><img src="assets/news-sports-day.jpg" alt="Inter-house sports results"></div>
-        <div class="body">
-          <span class="tag">Sports</span>
-          <h3>Inter-House Sports Results</h3>
-          <p>Congratulations to the Blue House for winning the 2026 Inter-House Sports!</p>
-          <span class="date">📅 08 Apr 2026</span>
-        </div>
-      </div>
-      <div class="news-card">
-        <div class="news-thumb"><img src="assets/news-art-exhibit.jpg" alt="Art exhibition"></div>
-        <div class="body">
-          <span class="tag">Events</span>
-          <h3>Annual Art Exhibition Success</h3>
-          <p>The annual art exhibition showcased incredible talent and creativity from our students.</p>
-          <span class="date">📅 01 Apr 2026</span>
-        </div>
-      </div>
+    <div class="news-grid" id="news-grid">
+      <div class="news-card"><div class="body"><p>Loading news...</p></div></div>
     </div>
   </div>
 </section>
@@ -265,10 +240,8 @@
     </div>
     <div class="events-card">
       <h3>Upcoming Events</h3>
-      <div class="events-row"><span>Science Fair</span><span class="d">16 Apr 2026</span></div>
-      <div class="events-row"><span>Sports Day</span><span class="d">25 Apr 2026</span></div>
-      <div class="events-row"><span>Prize Giving Day</span><span class="d">12 Nov 2026</span></div>
-      <a class="view-all" href="#">View All Events</a>
+      <div id="events-list"><div class="events-row"><span>Loading events...</span></div></div>
+      <a class="view-all" href="news-events.html">View All Events</a>
     </div>
   </div>
 </section>
@@ -294,11 +267,11 @@
       <div><h2>Campus Gallery</h2><div class="sub">Explore moments, memories and life at St. Eric High School.</div></div>
       <a class="view-all" href="#">View Gallery</a>
     </div>
-    <div class="gallery-strip">
-      <div class="g-item"><img src="assets/gallery-1.jpg" alt="Campus gallery photo 1"></div>
-      <div class="g-item"><img src="assets/gallery-2.jpg" alt="Campus gallery photo 2"></div>
-      <div class="g-item"><img src="assets/gallery-3.jpg" alt="Campus gallery photo 3"></div>
-      <div class="g-item"><img src="assets/gallery-4.jpg" alt="Campus gallery photo 4"></div>
+    <div class="gallery-strip" id="gallery-strip">
+      <div class="g-item"><img src="assets/gallery-1.jpg" alt="Campus gallery photo"></div>
+      <div class="g-item"><img src="assets/gallery-2.jpg" alt="Campus gallery photo"></div>
+      <div class="g-item"><img src="assets/gallery-3.jpg" alt="Campus gallery photo"></div>
+      <div class="g-item"><img src="assets/gallery-4.jpg" alt="Campus gallery photo"></div>
       <div class="g-item more">＋ More<span>View Gallery</span></div>
     </div>
   </div>
@@ -319,7 +292,7 @@
     </div>
     <div>
       <h4>Community</h4>
-      <ul><li>Clubs &amp; Robotics</li><li>Learning Hub</li><li>Student Life</li><li>Gallery</li></ul>
+      <ul><li>Clubs &amp; Robotics</li><li><a href="sports.html">Sports</a></li><li><a href="staff.html">Our Staff</a></li><li>Learning Hub</li><li>Student Life</li><li>Gallery</li></ul>
     </div>
     <div>
       <h4>Contact</h4>
@@ -332,5 +305,66 @@
   </div>
 </footer>
 
+<script src="assets/js/supabase-client.js"></script>
+<script>
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function formatDate(iso){
+  if(!iso) return '';
+  const d = new Date(iso + 'T00:00:00');
+  return d.toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'});
+}
+
+async function loadNews(){
+  const grid = document.getElementById('news-grid');
+  const { data, error } = await sb.from('news').select('*').eq('status','published').order('published_date', { ascending:false }).limit(3);
+  if(error || !data || data.length === 0){ grid.innerHTML = ''; return; }
+  grid.innerHTML = data.map(a => `
+    <div class="news-card">
+      <div class="news-thumb" style="background:linear-gradient(135deg,#123457,#2fa8d9)"></div>
+      <div class="body">
+        <span class="tag">${escapeHtml(a.category)}</span>
+        <h3>${escapeHtml(a.title)}</h3>
+        <p>${escapeHtml(a.summary || '')}</p>
+        <span class="date">📅 ${formatDate(a.published_date)}</span>
+      </div>
+    </div>`).join('');
+}
+
+async function loadEvents(){
+  const list = document.getElementById('events-list');
+  const today = new Date().toISOString().slice(0,10);
+  const { data, error } = await sb.from('events').select('*').gte('event_date', today).order('event_date', { ascending:true }).limit(3);
+  if(error || !data || data.length === 0){ list.innerHTML = '<div class="events-row"><span>No upcoming events yet.</span></div>'; return; }
+  list.innerHTML = data.map(e => `<div class="events-row"><span>${escapeHtml(e.title)}</span><span class="d">${formatDate(e.event_date)}</span></div>`).join('');
+}
+
+async function loadGallery(){
+  const strip = document.getElementById('gallery-strip');
+  const { data, error } = await sb.from('media').select('*').eq('in_gallery', true).order('uploaded_at', { ascending:false }).limit(4);
+  if(error || !data || data.length === 0) return; // keep placeholder images
+  const photos = data.map(m => {
+    const url = m.storage_path.startsWith('http') ? m.storage_path : sb.storage.from('media').getPublicUrl(m.storage_path).data.publicUrl;
+    return `<div class="g-item"><img src="${url}" alt="${escapeHtml(m.file_name)}"></div>`;
+  }).join('');
+  strip.innerHTML = photos + '<div class="g-item more">＋ More<span>View Gallery</span></div>';
+}
+
+async function loadHomepageContent(){
+  const { data, error } = await sb.from('site_settings').select('*').eq('key','homepage_content').single();
+  if(error || !data) return;
+  const v = data.value;
+  if(v.hero_eyebrow) document.getElementById('hero-eyebrow').textContent = v.hero_eyebrow;
+  if(v.hero_title) document.getElementById('hero-title').textContent = v.hero_title;
+  if(v.hero_text) document.getElementById('hero-text').textContent = v.hero_text;
+  if(v.about_text) document.getElementById('about-text').textContent = v.about_text;
+}
+
+loadHomepageContent();
+loadNews();
+loadEvents();
+loadGallery();
+</script>
 </body>
 </html>

@@ -1,0 +1,17 @@
+name = "st-eric-media-worker"
+main = "media-upload-worker.js"
+compatibility_date = "2026-01-01"
+
+# Binds the Worker's env.MEDIA_BUCKET to your R2 bucket.
+# Replace bucket_name with the actual R2 bucket you create in step 2.
+[[r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "steric-robotics-media"
+
+# Plain-text vars (safe to be here — these are already public:
+# the Supabase URL and anon key are the same ones already in
+# assets/js/supabase-client.js).
+[vars]
+SUPABASE_URL = "https://rdtnpwfhdcbtkilzttrv.supabase.co"
+SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJkdG5wd2ZoZGNidGtpbHp0dHJ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA1MTE3NDksImV4cCI6MjEwNjA4Nzc0OX0.iEkDWT5SxZWCATfiOM4FZnjUUMazKPdCrtK_czw_LDA"
+R2_PUBLIC_BASE = "https://pub-6937844a3d744fd7909830f79e7d83d4.r2.dev"

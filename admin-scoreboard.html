@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{--navy-900:#0c2540;--navy-800:#123457;--navy-700:#1a4470;--cyan:#2fa8d9;--gold:#f2ac3c;
     --bg:#f4f7fa;--panel:#f7f9fb;--ink:#12202f;--ink-soft:#64758a;--line:#e6ebf1;
@@ -81,24 +82,24 @@
     </div>
     <a class="sb-link" href="admin-dashboard.html"><span class="ico">🏠</span>Dashboard</a>
     <div class="sb-group-label">Pages</div>
-    <a class="sb-link" href="#"><span class="ico">🏡</span>Homepage</a>
-    <a class="sb-link" href="#"><span class="ico">📜</span>History Timeline</a>
-    <a class="sb-link" href="#"><span class="ico">🎯</span>Vision &amp; Mission</a>
-    <a class="sb-link" href="#"><span class="ico">🧑‍💼</span>Leadership</a>
-    <a class="sb-link" href="#"><span class="ico">🧑‍🏫</span>Staff Directory</a>
-    <a class="sb-link" href="#"><span class="ico">🏛️</span>Departments &amp; Subjects</a>
-    <a class="sb-link" href="#"><span class="ico">📆</span>Academic Calendar</a>
-    <a class="sb-link" href="#"><span class="ico">📝</span>Admissions (O &amp; A-Level)</a>
-    <a class="sb-link" href="#"><span class="ico">🎭</span>Clubs</a>
+    <a class="sb-link" href="admin-homepage.html"><span class="ico">🏡</span>Homepage</a>
+    <a class="sb-link" href="admin-history.html"><span class="ico">📜</span>History Timeline</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">🎯</span>Vision &amp; Mission</a>
+    <a class="sb-link" href="admin-leadership.html"><span class="ico">🧑‍💼</span>Leadership</a>
+    <a class="sb-link" href="admin-staff.html"><span class="ico">🧑‍🏫</span>Staff Directory</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">🏛️</span>Departments &amp; Subjects</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">📆</span>Academic Calendar</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">📝</span>Admissions (O &amp; A-Level)</a>
+    <a class="sb-link" href="admin-clubs.html"><span class="ico">🎭</span>Clubs</a>
     <div class="sb-group-label">Website</div>
     <a class="sb-link" href="admin-news.html"><span class="ico">📰</span>News</a>
     <a class="sb-link" href="admin-events.html"><span class="ico">📅</span>Events</a>
-    <a class="sb-link" href="#"><span class="ico">📣</span>Announcements</a>
+    <a class="sb-link" href="admin-announcements.html"><span class="ico">📣</span>Announcements</a>
     <a class="sb-link active" href="admin-scoreboard.html"><span class="ico">🏆</span>Scoreboard &amp; Results</a>
     <a class="sb-link" href="#"><span class="ico">🥇</span>Achievements</a>
-    <a class="sb-link" href="#"><span class="ico">🖼️</span>Gallery</a>
-    <a class="sb-link" href="#"><span class="ico">🗂️</span>Media Library</a>
-    <a class="sb-link" href="#"><span class="ico">✉️</span>Messages</a>
+    <a class="sb-link" href="admin-media.html"><span class="ico">🖼️</span>Gallery</a>
+    <a class="sb-link" href="admin-media.html"><span class="ico">🗂️</span>Media Library</a>
+    <a class="sb-link" href="admin-messages.html"><span class="ico">✉️</span>Messages</a>
     <div class="sb-group-label">Learning Hub</div>
     <a class="sb-link" href="#"><span class="ico">📝</span>Notes</a>
     <a class="sb-link" href="#"><span class="ico">📂</span>Resources</a>
@@ -117,7 +118,7 @@
   <div>
     <div class="topbar">
       <h1>Scoreboard &amp; Results</h1>
-      <div class="who"><div class="avatar"></div>Admin</div>
+      <div class="who"><div class="avatar"></div>Admin <a href="#" onclick="adminSignOut();return false" style="margin-left:10px;color:var(--ink-soft);text-decoration:underline">Sign out</a></div>
     </div>
 
     <div class="content">
@@ -163,22 +164,13 @@
   </div>
 </div>
 
+<script src="assets/js/supabase-client.js"></script>
 <script>
-const STORE_KEY = 'steric_cms_scoreboard';
-
-function seedIfEmpty(){
-  if(!localStorage.getItem(STORE_KEY)){
-    const seed = [
-      {id: crypto.randomUUID(), sport:'Football', type:'Inter-House', teamA:'Blue House', scoreA:3, teamB:'Red House', scoreB:1, date:'2026-04-08'},
-      {id: crypto.randomUUID(), sport:'Netball', type:'Inter-School', teamA:'St. Eric High', scoreA:28, teamB:'Hillcrest High', scoreB:24, date:'2026-04-02'},
-      {id: crypto.randomUUID(), sport:'Basketball', type:'Inter-School', teamA:'St. Eric High', scoreA:45, teamB:'Oakridge College', scoreB:52, date:'2026-03-27'},
-      {id: crypto.randomUUID(), sport:'Football', type:'Inter-House', teamA:'Green House', scoreA:2, teamB:'Yellow House', scoreB:2, date:'2026-03-20'}
-    ];
-    localStorage.setItem(STORE_KEY, JSON.stringify(seed));
-  }
+async function getMatches(){
+  const { data, error } = await sb.from('matches').select('*').order('match_date', { ascending:false });
+  if(error){ console.error(error); alert('Could not load matches: ' + error.message); return []; }
+  return data;
 }
-function getMatches(){ return JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); }
-function setMatches(list){ localStorage.setItem(STORE_KEY, JSON.stringify(list)); }
 
 function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -193,24 +185,24 @@ function sportIcon(s){
     'Table Tennis':'🏓',Volleyball:'🎾',Rugby:'🏉',Swimming:'🏊'}[s] || '🏆';
 }
 
-function render(){
-  const list = getMatches().sort((a,b)=> b.date.localeCompare(a.date));
+async function render(){
+  const list = await getMatches();
   const container = document.getElementById('match-list');
   const emptyMsg = document.getElementById('empty-msg');
   container.innerHTML = '';
   if(list.length === 0){ emptyMsg.style.display='block'; return; }
   emptyMsg.style.display='none';
   list.forEach(m=>{
-    const sA = Number(m.scoreA), sB = Number(m.scoreB);
+    const sA = Number(m.score_a), sB = Number(m.score_b);
     let badgeClass = 'draw', badgeText = 'Draw';
-    if(sA > sB){ badgeClass='win'; badgeText = `${m.teamA} Won`; }
-    else if(sB > sA){ badgeClass='win'; badgeText = `${m.teamB} Won`; }
+    if(sA > sB){ badgeClass='win'; badgeText = `${m.team_a} Won`; }
+    else if(sB > sA){ badgeClass='win'; badgeText = `${m.team_b} Won`; }
     const card = document.createElement('div');
     card.className = 'match-card';
     card.innerHTML = `
       <div class="match-info">
-        <div class="match-top">${sportIcon(m.sport)} ${escapeHtml(m.sport)} · ${escapeHtml(m.type)} · ${formatDate(m.date)}</div>
-        <div class="match-teams">${escapeHtml(m.teamA)} <span class="score">${sA} – ${sB}</span> ${escapeHtml(m.teamB)}</div>
+        <div class="match-top">${sportIcon(m.sport)} ${escapeHtml(m.sport)} · ${escapeHtml(m.match_type)} · ${formatDate(m.match_date)}</div>
+        <div class="match-teams">${escapeHtml(m.team_a)} <span class="score">${sA} – ${sB}</span> ${escapeHtml(m.team_b)}</div>
         <span class="result-badge ${badgeClass}">${badgeText}</span>
       </div>
       <div class="row-actions">
@@ -233,49 +225,53 @@ function openModal(){
   document.getElementById('f-date').value = new Date().toISOString().slice(0,10);
   document.getElementById('overlay').classList.add('open');
 }
-function editMatch(id){
-  const m = getMatches().find(x=>x.id===id);
+async function editMatch(id){
+  const list = await getMatches();
+  const m = list.find(x=>x.id===id);
   if(!m) return;
   document.getElementById('modal-title').textContent = 'Edit Match Result';
   document.getElementById('edit-id').value = m.id;
   document.getElementById('f-sport').value = m.sport;
-  document.getElementById('f-type').value = m.type;
-  document.getElementById('f-teamA').value = m.teamA;
-  document.getElementById('f-scoreA').value = m.scoreA;
-  document.getElementById('f-teamB').value = m.teamB;
-  document.getElementById('f-scoreB').value = m.scoreB;
-  document.getElementById('f-date').value = m.date;
+  document.getElementById('f-type').value = m.match_type;
+  document.getElementById('f-teamA').value = m.team_a;
+  document.getElementById('f-scoreA').value = m.score_a;
+  document.getElementById('f-teamB').value = m.team_b;
+  document.getElementById('f-scoreB').value = m.score_b;
+  document.getElementById('f-date').value = m.match_date;
   document.getElementById('overlay').classList.add('open');
 }
 function closeModal(){ document.getElementById('overlay').classList.remove('open'); }
-function saveMatch(){
+async function saveMatch(){
   const id = document.getElementById('edit-id').value;
   const teamA = document.getElementById('f-teamA').value.trim();
   const teamB = document.getElementById('f-teamB').value.trim();
   if(!teamA || !teamB){ alert('Please enter both team names.'); return; }
   const data = {
     sport: document.getElementById('f-sport').value,
-    type: document.getElementById('f-type').value,
-    teamA, teamB,
-    scoreA: Number(document.getElementById('f-scoreA').value || 0),
-    scoreB: Number(document.getElementById('f-scoreB').value || 0),
-    date: document.getElementById('f-date').value
+    match_type: document.getElementById('f-type').value,
+    team_a: teamA, team_b: teamB,
+    score_a: Number(document.getElementById('f-scoreA').value || 0),
+    score_b: Number(document.getElementById('f-scoreB').value || 0),
+    match_date: document.getElementById('f-date').value
   };
-  let list = getMatches();
-  if(id){ list = list.map(m => m.id === id ? {...m, ...data} : m); }
-  else { list.push({id: crypto.randomUUID(), ...data}); }
-  setMatches(list);
+  let error;
+  if(id){ ({ error } = await sb.from('matches').update(data).eq('id', id)); }
+  else { ({ error } = await sb.from('matches').insert(data)); }
+  if(error){ alert('Could not save: ' + error.message); return; }
   closeModal();
   render();
 }
-function deleteMatch(id){
+async function deleteMatch(id){
   if(!confirm('Delete this match result?')) return;
-  setMatches(getMatches().filter(m=>m.id!==id));
+  const { error } = await sb.from('matches').delete().eq('id', id);
+  if(error){ alert('Could not delete: ' + error.message); return; }
   render();
 }
 
-seedIfEmpty();
-render();
+(async ()=>{
+  const session = await requireAdminAuth();
+  if(session) render();
+})();
 </script>
 </body>
 </html>

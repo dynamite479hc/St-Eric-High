@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{--navy-900:#0c2540;--navy-800:#123457;--navy-700:#1a4470;--cyan:#2fa8d9;--gold:#f2ac3c;--gold-dark:#d98f22;
     --bg:#ffffff;--panel:#f7f9fb;--ink:#12202f;--ink-soft:#64758a;--line:#e6ebf1;box-sizing:border-box}
@@ -127,24 +128,15 @@
 
     <div class="panel" id="p-vision">
       <h2>Vision &amp; Mission</h2>
-      <p><strong>Vision:</strong> To be a leading centre of academic excellence, faith and community — nurturing confident, capable and compassionate leaders of tomorrow.</p>
-      <p><strong>Mission:</strong> We provide a supportive environment where every student is known, valued and challenged to reach their full potential.</p>
-      <ul class="list">
-        <li>Deliver quality education across O-Level and A-Level programs</li>
-        <li>Build strong moral and spiritual foundations</li>
-        <li>Encourage curiosity through academics, sports, arts and technology</li>
-        <li>Prepare students to be responsible members of their community</li>
-      </ul>
+      <p id="vm-vision"><strong>Vision:</strong> Loading...</p>
+      <p id="vm-mission"><strong>Mission:</strong> Loading...</p>
+      <ul class="list" id="vm-points"></ul>
     </div>
 
     <div class="panel" id="p-leadership">
       <h2>Leadership</h2>
       <p>Meet the team guiding St. Eric High School's mission and daily operations.</p>
-      <div class="leader-grid">
-        <div class="leader"><div class="ph"><img src="assets/leader-head.jpg" alt="Headmaster"></div><h3>Headmaster</h3><span>School Leadership</span></div>
-        <div class="leader"><div class="ph"><img src="assets/leader-deputy.jpg" alt="Deputy Head"></div><h3>Deputy Head</h3><span>Academics</span></div>
-        <div class="leader"><div class="ph"><img src="assets/leader-bursar.jpg" alt="Bursar"></div><h3>Bursar</h3><span>Finance &amp; Admin</span></div>
-      </div>
+      <div class="leader-grid" id="leader-grid"><p style="color:var(--ink-soft);font-size:13px">Loading...</p></div>
     </div>
 
     <div class="panel" id="p-staff">
@@ -189,6 +181,35 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     document.getElementById(btn.dataset.target).classList.add('active');
   });
 });
+</script>
+
+<script src="assets/js/supabase-client.js"></script>
+<script>
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function publicUrl(value){ if(!value) return ''; if(value.startsWith('http')) return value; return sb.storage.from('media').getPublicUrl(value).data.publicUrl; }
+
+async function loadVisionMission(){
+  const { data, error } = await sb.from('site_settings').select('*').eq('key','vision_mission').single();
+  if(error || !data) return;
+  const v = data.value;
+  document.getElementById('vm-vision').innerHTML = `<strong>Vision:</strong> ${escapeHtml(v.vision || '')}`;
+  document.getElementById('vm-mission').innerHTML = `<strong>Mission:</strong> ${escapeHtml(v.mission || '')}`;
+  document.getElementById('vm-points').innerHTML = (v.mission_points || []).map(p => `<li>${escapeHtml(p)}</li>`).join('');
+}
+
+async function loadLeadership(){
+  const grid = document.getElementById('leader-grid');
+  const { data, error } = await sb.from('leadership').select('*').order('sort_order', { ascending:true });
+  if(error || !data || data.length === 0){ grid.innerHTML = ''; return; }
+  grid.innerHTML = data.map(l => `
+    <div class="leader">
+      <div class="ph">${l.photo_path ? `<img src="${publicUrl(l.photo_path)}" alt="${escapeHtml(l.name)}">` : ''}</div>
+      <h3>${escapeHtml(l.name)}</h3><span>${escapeHtml(l.title)}</span>
+    </div>`).join('');
+}
+
+loadVisionMission();
+loadLeadership();
 </script>
 </body>
 </html>

@@ -1,34 +1,61 @@
-# Assets needed for index.html
+# Moving media storage to Cloudflare R2
 
-Drop these files into this `assets/` folder (same names, same folder as `index.html`) and the page will pick them up automatically — no code changes needed.
+This replaces Supabase Storage as the home for uploaded photos (staff photos,
+leadership photos, history timeline photos, and the Gallery/Media Library).
+Existing files already uploaded to Supabase Storage keep working — the site
+reads old and new files correctly either way — but everything uploaded from
+now on goes to R2 instead.
 
-| Filename | Used for | Suggested size |
-|---|---|---|
-| logo.png | Header/footer logo (all pages) | 200×200px, transparent PNG |
-| hero-campus.jpg | Home hero background | 1800×1000px, landscape |
-| about-students.jpg | Home "About" video thumbnail | 1000×620px, landscape |
-| news-stem-fair.jpg | Home Latest News card 1 | 800×500px |
-| news-sports-day.jpg | Home Latest News card 2 | 800×500px |
-| news-art-exhibit.jpg | Home Latest News card 3 | 800×500px |
-| sports-banner.jpg | Home Sports & Student Life banner | 1200×700px |
-| gallery-1.jpg – gallery-4.jpg | Home Campus Gallery strip (4 photos) | 600×600px, square |
-| about-hero.jpg | About page banner | 1800×500px |
-| about-history.jpg | About → History side image | 900×700px |
-| leader-head.jpg / leader-deputy.jpg / leader-bursar.jpg | About → Leadership photos | 500×500px, square |
-| academics-hero.jpg | Academics page banner | 1800×500px |
-| admissions-hero.jpg | Admissions page banner | 1800×500px |
-| student-life-hero.jpg | Student Life page banner | 1800×500px |
-| history-hero.jpg | History page banner | 1800×500px |
-| history-founding.jpg | History → "Where It Started" photo | 1000×560px |
-| history-early-years.jpg | History → "Building the Foundation" photo | 1000×560px |
-| history-expansion.jpg | History → "O/A-Level Expansion" photo | 1000×560px |
-| history-today.jpg | History → "St. Eric High School Now" photo | 1000×560px |
-| news-hero.jpg | News & Events page banner | 1800×500px |
-| contact-hero.jpg | Contact page banner | 1800×500px |
-| contact-map.jpg | Contact page map image | 900×700px |
-| sports-hero.jpg | Sports page banner | 1800×500px |
-| sports-news-netball.jpg | Sports page → Sports News item 2 | 800×500px |
-| staff-hero.jpg | Staff page banner | 1800×500px |
-| staff-1.jpg – staff-11.jpg | Staff page → individual teacher photos (11 total) | 500×500px, square |
+## 1. Create the R2 bucket
+In the Cloudflare dashboard: **R2 → Create bucket**. Name it `st-eric-media`
+(or update `bucket_name` in `worker/wrangler.toml` to match whatever you
+name it).
 
-Tip: keep them compressed (JPEG quality ~75–80, or WebP) so the homepage still loads fast once real photos are in.
+## 2. Make the bucket public
+Still in the bucket's settings, either:
+- **Connect a custom domain** (e.g. `media.stelichigh.org`) under
+  **Settings → Public Access → Custom Domains** — recommended, since it's a
+  stable URL you control, or
+- Enable the **r2.dev** public URL Cloudflare gives you for quick testing.
+
+Either way, copy that public base URL — you'll need it in step 4.
+
+## 3. Deploy the Worker
+From the `worker/` folder, using [Wrangler](https://developers.cloudflare.com/workers/wrangler/):
+
+```
+npm install -g wrangler
+wrangler login
+wrangler deploy
+```
+
+This publishes `media-upload-worker.js` using the config in `wrangler.toml`,
+and gives you a Worker URL like
+`https://st-eric-media-worker.<your-subdomain>.workers.dev`.
+
+## 4. Fill in the config
+Two files need the real values once you have them:
+
+**`worker/wrangler.toml`** (then redeploy with `wrangler deploy`):
+- `SUPABASE_URL` and `SUPABASE_ANON_KEY` — same values as in
+  `assets/js/supabase-client.js`
+- `PUBLIC_BASE_URL` — the public URL from step 2
+
+**`assets/js/r2-client.js`**:
+- `R2_WORKER_URL` — the Worker URL from step 3
+- `R2_PUBLIC_BASE_URL` — the same public URL from step 2
+
+## 5. Test it
+Sign in at `admin-login.html`, open `admin-media.html`, and upload a photo.
+It should appear immediately and its URL should point at your R2 public
+domain rather than Supabase. Staff/Leadership/History photo uploads
+(`admin-staff.html`, `admin-leadership.html`, `admin-history.html`) work
+the same way.
+
+## Why the Worker exists
+R2's own upload API needs an access key, and that key can never be safely
+shipped to the browser — anyone could read it from the page source and
+upload or delete files freely. The Worker sits in between: the browser
+sends it the admin's existing Supabase login token, the Worker checks
+that token is valid with Supabase, and only then touches R2. The R2
+credentials themselves stay inside Cloudflare and never reach the client.

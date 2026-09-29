@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>St. Eric CMS — Events</title>
+<title>St. Eric CMS — Messages</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -41,32 +41,23 @@
   .avatar{width:32px;height:32px;border-radius:50%;background:var(--panel);border:1px solid var(--line)}
 
   .content{padding:28px 26px 50px}
-  .head-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+  .head-row{margin-bottom:20px}
   .head-row h2{font-size:20px;color:var(--navy-900)}
-  .btn{border:none;border-radius:8px;padding:11px 18px;font-size:13.5px;font-weight:600;cursor:pointer}
-  .btn-primary{background:var(--gold);color:var(--navy-900)}
+  .btn{border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer}
   .btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink-soft)}
   .btn-danger{background:#fbebeb;color:var(--warn)}
 
-  .panel-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px}
-  table{width:100%;border-collapse:collapse;font-size:13px}
-  th{text-align:left;color:var(--ink-soft);font-size:11px;text-transform:uppercase;padding:8px 6px;border-bottom:1px solid var(--line)}
-  td{padding:11px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
-  tr:last-child td{border-bottom:none}
+  .msg-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:12px}
+  .msg-card.unread{border-left:4px solid var(--cyan)}
+  .msg-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+  .msg-top h3{font-size:14.5px}
+  .msg-top span.email{font-size:12.5px;color:var(--ink-soft)}
+  .msg-body{font-size:13.5px;color:var(--ink-soft);margin-bottom:10px}
+  .msg-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+  .msg-date{font-size:11.5px;color:#95a5b5}
   .row-actions{display:flex;gap:8px}
-  .row-actions button{padding:6px 12px;font-size:12px;border-radius:6px}
+  .unread-pill{font-size:10.5px;font-weight:700;color:#fff;background:var(--cyan);padding:3px 9px;border-radius:12px}
   .empty{padding:40px 0;text-align:center;color:var(--ink-soft);font-size:14px}
-  .badge{font-size:11px;font-weight:700;color:#fff;background:var(--navy-700);padding:4px 10px;border-radius:20px;white-space:nowrap}
-
-  .overlay{display:none;position:fixed;inset:0;background:rgba(12,37,64,.5);z-index:100;align-items:center;justify-content:center;padding:20px}
-  .overlay.open{display:flex}
-  .modal{background:#fff;border-radius:14px;padding:26px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto}
-  .modal h3{font-size:16px;margin-bottom:16px;color:var(--navy-900)}
-  .field{margin-bottom:14px}
-  .field label{display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;color:var(--ink-soft)}
-  .field input,.field select,.field textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13.5px;font-family:'Inter';background:var(--panel)}
-  .field textarea{resize:vertical;min-height:80px}
-  .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
 </style>
 </head>
 <body>
@@ -90,13 +81,13 @@
     <a class="sb-link" href="admin-clubs.html"><span class="ico">🎭</span>Clubs</a>
     <div class="sb-group-label">Website</div>
     <a class="sb-link" href="admin-news.html"><span class="ico">📰</span>News</a>
-    <a class="sb-link active" href="admin-events.html"><span class="ico">📅</span>Events</a>
+    <a class="sb-link" href="admin-events.html"><span class="ico">📅</span>Events</a>
     <a class="sb-link" href="admin-announcements.html"><span class="ico">📣</span>Announcements</a>
     <a class="sb-link" href="admin-scoreboard.html"><span class="ico">🏆</span>Scoreboard &amp; Results</a>
     <a class="sb-link" href="#"><span class="ico">🥇</span>Achievements</a>
     <a class="sb-link" href="admin-media.html"><span class="ico">🖼️</span>Gallery</a>
     <a class="sb-link" href="admin-media.html"><span class="ico">🗂️</span>Media Library</a>
-    <a class="sb-link" href="admin-messages.html"><span class="ico">✉️</span>Messages</a>
+    <a class="sb-link active" href="admin-messages.html"><span class="ico">✉️</span>Messages</a>
     <div class="sb-group-label">Learning Hub</div>
     <a class="sb-link" href="#"><span class="ico">📝</span>Notes</a>
     <a class="sb-link" href="#"><span class="ico">📂</span>Resources</a>
@@ -114,125 +105,70 @@
 
   <div>
     <div class="topbar">
-      <h1>Events</h1>
+      <h1>Messages</h1>
       <div class="who"><div class="avatar"></div>Admin <a href="#" onclick="adminSignOut();return false" style="margin-left:10px;color:var(--ink-soft);text-decoration:underline">Sign out</a></div>
     </div>
 
     <div class="content">
-      <div class="head-row">
-        <h2>Upcoming Events</h2>
-        <button class="btn btn-primary" onclick="openModal()">+ Add Event</button>
-      </div>
-
-      <div class="panel-card">
-        <table id="events-table">
-          <tr><th>Event</th><th>Category</th><th>Date</th><th>Actions</th></tr>
-        </table>
-        <div id="empty-msg" class="empty" style="display:none">No events yet. Click "Add Event" to create one.</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="overlay" id="overlay">
-  <div class="modal">
-    <h3 id="modal-title">Add Event</h3>
-    <input type="hidden" id="edit-id">
-    <div class="field"><label>Event Name</label><input type="text" id="f-title" placeholder="e.g. Science Fair"></div>
-    <div class="field"><label>Category</label>
-      <select id="f-category">
-        <option>Whole School</option><option>Academics</option><option>Sports</option><option>Arts</option><option>Community</option>
-      </select>
-    </div>
-    <div class="field"><label>Description</label><textarea id="f-desc" placeholder="Optional details..."></textarea></div>
-    <div class="field"><label>Date</label><input type="date" id="f-date"></div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveEvent()">Save Event</button>
+      <div class="head-row"><h2>Contact Form Submissions</h2></div>
+      <div id="msg-list"></div>
+      <div id="empty-msg" class="empty" style="display:none">No messages yet.</div>
     </div>
   </div>
 </div>
 
 <script src="assets/js/supabase-client.js"></script>
 <script>
-async function getEvents(){
-  const { data, error } = await sb.from('events').select('*').order('event_date', { ascending:true });
-  if(error){ console.error(error); alert('Could not load events: ' + error.message); return []; }
-  return data;
-}
-
 function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
-function formatDate(iso){
+function formatDateTime(iso){
   if(!iso) return '';
-  const d = new Date(iso + 'T00:00:00');
-  return d.toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'});
+  const d = new Date(iso);
+  return d.toLocaleString('en-GB', {day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
+}
+
+async function getMessages(){
+  const { data, error } = await sb.from('messages').select('*').order('created_at', { ascending:false });
+  if(error){ console.error(error); alert('Could not load messages: ' + error.message); return []; }
+  return data;
 }
 
 async function render(){
-  const list = await getEvents();
-  const table = document.getElementById('events-table');
+  const list = await getMessages();
+  const container = document.getElementById('msg-list');
   const emptyMsg = document.getElementById('empty-msg');
-  table.innerHTML = '<tr><th>Event</th><th>Category</th><th>Date</th><th>Actions</th></tr>';
+  container.innerHTML = '';
   if(list.length === 0){ emptyMsg.style.display='block'; return; }
   emptyMsg.style.display='none';
-  list.forEach(e=>{
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${escapeHtml(e.title)}</td>
-      <td><span class="badge">${escapeHtml(e.category)}</span></td>
-      <td>${formatDate(e.event_date)}</td>
-      <td><div class="row-actions">
-        <button class="btn btn-ghost" onclick="editEvent('${e.id}')">Edit</button>
-        <button class="btn btn-danger" onclick="deleteEvent('${e.id}')">Delete</button>
-      </div></td>`;
-    table.appendChild(tr);
+  list.forEach(m=>{
+    const card = document.createElement('div');
+    card.className = `msg-card ${m.is_read ? '' : 'unread'}`;
+    card.innerHTML = `
+      <div class="msg-top">
+        <div><h3>${escapeHtml(m.full_name)} ${m.is_read ? '' : '<span class="unread-pill">New</span>'}</h3>
+        <span class="email">${escapeHtml(m.email)}${m.subject ? ' · ' + escapeHtml(m.subject) : ''}</span></div>
+      </div>
+      <div class="msg-body">${escapeHtml(m.message)}</div>
+      <div class="msg-bottom">
+        <span class="msg-date">${formatDateTime(m.created_at)}</span>
+        <div class="row-actions">
+          ${m.is_read ? '' : `<button class="btn btn-ghost" onclick="markRead('${m.id}')">Mark as Read</button>`}
+          <button class="btn btn-danger" onclick="deleteMessage('${m.id}')">Delete</button>
+        </div>
+      </div>`;
+    container.appendChild(card);
   });
 }
 
-function openModal(){
-  document.getElementById('modal-title').textContent = 'Add Event';
-  document.getElementById('edit-id').value = '';
-  document.getElementById('f-title').value = '';
-  document.getElementById('f-category').value = 'Whole School';
-  document.getElementById('f-desc').value = '';
-  document.getElementById('f-date').value = new Date().toISOString().slice(0,10);
-  document.getElementById('overlay').classList.add('open');
-}
-async function editEvent(id){
-  const list = await getEvents();
-  const e = list.find(x=>x.id===id);
-  if(!e) return;
-  document.getElementById('modal-title').textContent = 'Edit Event';
-  document.getElementById('edit-id').value = e.id;
-  document.getElementById('f-title').value = e.title;
-  document.getElementById('f-category').value = e.category;
-  document.getElementById('f-desc').value = e.description || '';
-  document.getElementById('f-date').value = e.event_date;
-  document.getElementById('overlay').classList.add('open');
-}
-function closeModal(){ document.getElementById('overlay').classList.remove('open'); }
-async function saveEvent(){
-  const id = document.getElementById('edit-id').value;
-  const title = document.getElementById('f-title').value.trim();
-  if(!title){ alert('Please enter an event name.'); return; }
-  const data = {
-    title,
-    category: document.getElementById('f-category').value,
-    description: document.getElementById('f-desc').value.trim(),
-    event_date: document.getElementById('f-date').value
-  };
-  let error;
-  if(id){ ({ error } = await sb.from('events').update(data).eq('id', id)); }
-  else { ({ error } = await sb.from('events').insert(data)); }
-  if(error){ alert('Could not save: ' + error.message); return; }
-  closeModal();
+async function markRead(id){
+  const { error } = await sb.from('messages').update({ is_read: true }).eq('id', id);
+  if(error){ alert('Could not update: ' + error.message); return; }
   render();
 }
-async function deleteEvent(id){
-  if(!confirm('Delete this event?')) return;
-  const { error } = await sb.from('events').delete().eq('id', id);
+async function deleteMessage(id){
+  if(!confirm('Delete this message?')) return;
+  const { error } = await sb.from('messages').delete().eq('id', id);
   if(error){ alert('Could not delete: ' + error.message); return; }
   render();
 }

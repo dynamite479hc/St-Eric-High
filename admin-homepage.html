@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>St. Eric CMS — Homepage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+  :root{--navy-900:#0c2540;--navy-700:#1a4470;--gold:#f2ac3c;--bg:#f4f7fa;--panel:#f7f9fb;--ink:#12202f;--ink-soft:#64758a;--line:#e6ebf1;--ok:#1e9e64;--warn:#c94f4f;box-sizing:border-box}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  h1,h2,h3,.brand{font-family:'Poppins',system-ui,sans-serif}
+  a{color:inherit;text-decoration:none} img{max-width:100%;display:block} button{font-family:'Inter'}
+  .shell{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+  @media (max-width:880px){.shell{grid-template-columns:1fr}}
+  .sidebar{background:var(--navy-900);color:#cfe0ee;padding:20px 16px;position:sticky;top:0;height:100vh;overflow-y:auto}
+  @media (max-width:880px){.sidebar{display:none}}
+  .sb-brand{display:flex;align-items:center;gap:10px;padding:6px 6px 20px;border-bottom:1px solid #1e3a5c;margin-bottom:16px}
+  .sb-crest{width:32px;height:32px;border-radius:50%;overflow:hidden;flex:none;background:#fff}
+  .sb-brand span{font-size:13.5px;font-weight:700;color:#fff}
+  .sb-group-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#5c7896;margin:18px 10px 6px}
+  .sb-group-label:first-of-type{margin-top:0}
+  .sb-link{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;font-size:13.5px;font-weight:500;color:#cfe0ee}
+  .sb-link:hover{background:#152f4d} .sb-link.active{background:var(--navy-700);color:#fff;font-weight:600} .sb-link .ico{width:16px;text-align:center;font-size:14px}
+  .topbar{background:#fff;border-bottom:1px solid var(--line);padding:14px 26px;display:flex;justify-content:space-between;align-items:center;padding-top:calc(14px + env(safe-area-inset-top,0px))}
+  .topbar h1{font-size:16px} .topbar .who{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--ink-soft)}
+  .avatar{width:32px;height:32px;border-radius:50%;background:var(--panel);border:1px solid var(--line)}
+  .content{padding:28px 26px 50px;max-width:640px}
+  .head-row{margin-bottom:20px} .head-row h2{font-size:20px;color:var(--navy-900)}
+  .panel-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;margin-bottom:20px}
+  .panel-card h3{font-size:15px;margin-bottom:16px;color:var(--navy-900)}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;color:var(--ink-soft)}
+  .field input,.field textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13.5px;font-family:'Inter';background:var(--panel)}
+  .field textarea{resize:vertical;min-height:80px}
+  .btn{border:none;border-radius:8px;padding:11px 20px;font-size:13.5px;font-weight:600;cursor:pointer}
+  .btn-primary{background:var(--gold);color:var(--navy-900)}
+  .save-status{font-size:12.5px;margin-left:12px;color:var(--ok)}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="sb-brand"><div class="sb-crest"><img src="assets/logo.png" alt="St. Eric High School logo"></div><span>ST. ERIC CMS</span></div>
+    <a class="sb-link" href="admin-dashboard.html"><span class="ico">🏠</span>Dashboard</a>
+    <div class="sb-group-label">Pages</div>
+    <a class="sb-link active" href="admin-homepage.html"><span class="ico">🏡</span>Homepage</a>
+    <a class="sb-link" href="admin-history.html"><span class="ico">📜</span>History Timeline</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">🎯</span>Vision &amp; Mission</a>
+    <a class="sb-link" href="admin-leadership.html"><span class="ico">🧑‍💼</span>Leadership</a>
+    <a class="sb-link" href="admin-staff.html"><span class="ico">🧑‍🏫</span>Staff Directory</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">🏛️</span>Departments &amp; Subjects</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">📆</span>Academic Calendar</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">📝</span>Admissions (O &amp; A-Level)</a>
+    <a class="sb-link" href="admin-clubs.html"><span class="ico">🎭</span>Clubs</a>
+    <div class="sb-group-label">Website</div>
+    <a class="sb-link" href="admin-news.html"><span class="ico">📰</span>News</a>
+    <a class="sb-link" href="admin-events.html"><span class="ico">📅</span>Events</a>
+    <a class="sb-link" href="admin-announcements.html"><span class="ico">📣</span>Announcements</a>
+    <a class="sb-link" href="admin-scoreboard.html"><span class="ico">🏆</span>Scoreboard &amp; Results</a>
+    <a class="sb-link" href="#"><span class="ico">🥇</span>Achievements</a>
+    <a class="sb-link" href="admin-media.html"><span class="ico">🖼️</span>Gallery</a>
+    <a class="sb-link" href="admin-media.html"><span class="ico">🗂️</span>Media Library</a>
+    <a class="sb-link" href="admin-messages.html"><span class="ico">✉️</span>Messages</a>
+    <div class="sb-group-label">Learning Hub</div>
+    <a class="sb-link" href="#"><span class="ico">📝</span>Notes</a>
+    <a class="sb-link" href="#"><span class="ico">📂</span>Resources</a>
+    <a class="sb-link" href="#"><span class="ico">📄</span>Past Papers</a>
+    <div class="sb-group-label">School</div>
+    <a class="sb-link" href="#"><span class="ico">📞</span>Contact Info</a>
+    <a class="sb-link" href="#"><span class="ico">🔗</span>Social Links</a>
+    <a class="sb-link" href="#"><span class="ico">🗓️</span>Important Dates</a>
+    <a class="sb-link" href="#"><span class="ico">🎨</span>Branding</a>
+    <div class="sb-group-label">Settings</div>
+    <a class="sb-link" href="#"><span class="ico">👥</span>Users</a>
+    <a class="sb-link" href="#"><span class="ico">🛡️</span>Roles</a>
+    <a class="sb-link" href="#"><span class="ico">⚙️</span>Settings</a>
+  </aside>
+  <div>
+    <div class="topbar"><h1>Homepage</h1><div class="who"><div class="avatar"></div>Admin <a href="#" onclick="adminSignOut();return false" style="margin-left:10px;color:var(--ink-soft);text-decoration:underline">Sign out</a></div></div>
+    <div class="content">
+      <div class="head-row"><h2>Homepage Content</h2></div>
+      <div class="panel-card">
+        <h3>Hero Section</h3>
+        <div class="field"><label>Eyebrow text</label><input type="text" id="f-eyebrow"></div>
+        <div class="field"><label>Hero Title</label><input type="text" id="f-title"></div>
+        <div class="field"><label>Hero Text</label><textarea id="f-text"></textarea></div>
+      </div>
+      <div class="panel-card">
+        <h3>About Section</h3>
+        <div class="field"><label>About Blurb</label><textarea id="f-about"></textarea></div>
+      </div>
+      <button class="btn btn-primary" onclick="save()">Save Changes</button>
+      <span class="save-status" id="save-status"></span>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/supabase-client.js"></script>
+<script>
+async function load(){
+  const { data, error } = await sb.from('site_settings').select('*').eq('key','homepage_content').single();
+  if(error || !data) return;
+  const v = data.value;
+  document.getElementById('f-eyebrow').value = v.hero_eyebrow || '';
+  document.getElementById('f-title').value = v.hero_title || '';
+  document.getElementById('f-text').value = v.hero_text || '';
+  document.getElementById('f-about').value = v.about_text || '';
+}
+
+async function save(){
+  const value = {
+    hero_eyebrow: document.getElementById('f-eyebrow').value.trim(),
+    hero_title: document.getElementById('f-title').value.trim(),
+    hero_text: document.getElementById('f-text').value.trim(),
+    about_text: document.getElementById('f-about').value.trim()
+  };
+  const { error } = await sb.from('site_settings').update({ value }).eq('key','homepage_content');
+  const status = document.getElementById('save-status');
+  if(error){ status.style.color='#c94f4f'; status.textContent = 'Could not save: ' + error.message; return; }
+  status.style.color='#1e9e64'; status.textContent = 'Saved!';
+  setTimeout(()=> status.textContent='', 2500);
+}
+
+(async ()=>{ const session = await requireAdminAuth(); if(session) load(); })();
+</script>
+</body>
+</html>

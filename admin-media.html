@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{--navy-900:#0c2540;--navy-800:#123457;--navy-700:#1a4470;--cyan:#2fa8d9;--gold:#f2ac3c;
     --bg:#f4f7fa;--panel:#f7f9fb;--ink:#12202f;--ink-soft:#64758a;--line:#e6ebf1;
@@ -81,15 +82,15 @@
     </div>
     <a class="sb-link" href="admin-dashboard.html"><span class="ico">🏠</span>Dashboard</a>
     <div class="sb-group-label">Pages</div>
-    <a class="sb-link" href="#"><span class="ico">🏡</span>Homepage</a>
-    <a class="sb-link" href="#"><span class="ico">📜</span>History Timeline</a>
-    <a class="sb-link" href="#"><span class="ico">🎯</span>Vision &amp; Mission</a>
-    <a class="sb-link" href="#"><span class="ico">🧑‍💼</span>Leadership</a>
-    <a class="sb-link" href="#"><span class="ico">🧑‍🏫</span>Staff Directory</a>
-    <a class="sb-link" href="#"><span class="ico">🏛️</span>Departments &amp; Subjects</a>
-    <a class="sb-link" href="#"><span class="ico">📆</span>Academic Calendar</a>
-    <a class="sb-link" href="#"><span class="ico">📝</span>Admissions (O &amp; A-Level)</a>
-    <a class="sb-link" href="#"><span class="ico">🎭</span>Clubs</a>
+    <a class="sb-link" href="admin-homepage.html"><span class="ico">🏡</span>Homepage</a>
+    <a class="sb-link" href="admin-history.html"><span class="ico">📜</span>History Timeline</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">🎯</span>Vision &amp; Mission</a>
+    <a class="sb-link" href="admin-leadership.html"><span class="ico">🧑‍💼</span>Leadership</a>
+    <a class="sb-link" href="admin-staff.html"><span class="ico">🧑‍🏫</span>Staff Directory</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">🏛️</span>Departments &amp; Subjects</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">📆</span>Academic Calendar</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">📝</span>Admissions (O &amp; A-Level)</a>
+    <a class="sb-link" href="admin-clubs.html"><span class="ico">🎭</span>Clubs</a>
     <div class="sb-group-label">Website</div>
     <a class="sb-link" href="admin-news.html"><span class="ico">📰</span>News</a>
     <a class="sb-link" href="admin-events.html"><span class="ico">📅</span>Events</a>
@@ -98,7 +99,7 @@
     <a class="sb-link" href="#"><span class="ico">🥇</span>Achievements</a>
     <a class="sb-link active" href="admin-media.html"><span class="ico">🖼️</span>Gallery</a>
     <a class="sb-link active" href="admin-media.html"><span class="ico">🗂️</span>Media Library</a>
-    <a class="sb-link" href="#"><span class="ico">✉️</span>Messages</a>
+    <a class="sb-link" href="admin-messages.html"><span class="ico">✉️</span>Messages</a>
     <div class="sb-group-label">Learning Hub</div>
     <a class="sb-link" href="#"><span class="ico">📝</span>Notes</a>
     <a class="sb-link" href="#"><span class="ico">📂</span>Resources</a>
@@ -117,17 +118,17 @@
   <div>
     <div class="topbar">
       <h1>Gallery &amp; Media Library</h1>
-      <div class="who"><div class="avatar"></div>Admin</div>
+      <div class="who"><div class="avatar"></div>Admin <a href="#" onclick="adminSignOut();return false" style="margin-left:10px;color:var(--ink-soft);text-decoration:underline">Sign out</a></div>
     </div>
 
     <div class="content">
       <div class="head-row"><h2>Media Library</h2></div>
-      <div class="note">One shared library — tag each photo by category, and flip "Show in Gallery" on to feature it on the public Campus Gallery. The same file can be reused in News, Sports, or anywhere else once this is wired to real storage.</div>
+      <div class="note">One shared library — tag each photo by category, and flip "Show in Gallery" on to feature it on the public Campus Gallery. The same file can be reused in News, Sports, or anywhere else once those pages are wired to pull from here.</div>
 
       <div class="upload-box">
         <label class="upload-label" for="file-input">📤 Upload Photos</label>
         <input type="file" id="file-input" accept="image/*" multiple onchange="handleUpload(event)">
-        <p>PNG or JPG · stored in this browser for now (not yet synced to shared storage)</p>
+        <p id="upload-status">PNG or JPG · stored in Cloudflare R2</p>
       </div>
 
       <div class="filters" id="filters"></div>
@@ -138,41 +139,40 @@
   </div>
 </div>
 
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/r2-client.js"></script>
 <script>
-const STORE_KEY = 'steric_cms_media';
 const CATEGORIES = ['Campus','Events','Sports','Students','News','Staff'];
 let activeFilter = 'All';
 
-function getMedia(){ return JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); }
-function setMedia(list){
-  try{
-    localStorage.setItem(STORE_KEY, JSON.stringify(list));
-  }catch(e){
-    alert('Storage is full — this demo keeps files in the browser, so try removing some older uploads first.');
-  }
+async function getMedia(){
+  const { data, error } = await sb.from('media').select('*').order('uploaded_at', { ascending:false });
+  if(error){ console.error(error); alert('Could not load media: ' + error.message); return []; }
+  return data;
 }
 
-function handleUpload(event){
+async function handleUpload(event){
   const files = Array.from(event.target.files);
-  const list = getMedia();
-  let remaining = files.length;
-  if(remaining === 0) return;
-  files.forEach(file=>{
-    const reader = new FileReader();
-    reader.onload = () => {
-      list.push({
-        id: crypto.randomUUID(),
-        name: file.name,
+  if(files.length === 0) return;
+  const statusEl = document.getElementById('upload-status');
+  for(const file of files){
+    statusEl.textContent = `Uploading ${file.name}...`;
+    try{
+      const { url } = await uploadToR2(file, 'gallery');
+      const { error: dbErr } = await sb.from('media').insert({
+        file_name: file.name,
+        storage_path: url,
         category: 'Campus',
-        inGallery: true,
-        data: reader.result
+        in_gallery: true
       });
-      remaining--;
-      if(remaining === 0){ setMedia(list); render(); }
-    };
-    reader.readAsDataURL(file);
-  });
+      if(dbErr){ alert(`Uploaded file but could not save its record: ${dbErr.message}`); }
+    }catch(e){
+      alert(`Could not upload ${file.name}: ${e.message}`);
+    }
+  }
+  statusEl.textContent = 'PNG or JPG · stored in Cloudflare R2';
   event.target.value = '';
+  render();
 }
 
 function renderFilters(){
@@ -188,9 +188,9 @@ function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 }
 
-function render(){
+async function render(){
   renderFilters();
-  let list = getMedia();
+  let list = await getMedia();
   if(activeFilter !== 'All'){ list = list.filter(m => m.category === activeFilter); }
   const grid = document.getElementById('media-grid');
   const emptyMsg = document.getElementById('empty-msg');
@@ -202,33 +202,40 @@ function render(){
     const item = document.createElement('div');
     item.className = 'media-item';
     item.innerHTML = `
-      <div class="m-thumb"><img src="${m.data}" alt="${escapeHtml(m.name)}"></div>
+      <div class="m-thumb"><img src="${publicUrl(m.storage_path)}" alt="${escapeHtml(m.file_name)}"></div>
       <div class="m-body">
-        <div class="m-name">${escapeHtml(m.name)}</div>
+        <div class="m-name">${escapeHtml(m.file_name)}</div>
         <div class="m-row">
           <select onchange="updateCategory('${m.id}', this.value)">${catOptions}</select>
-          <label class="gallery-toggle"><input type="checkbox" ${m.inGallery?'checked':''} onchange="toggleGallery('${m.id}', this.checked)"> Gallery</label>
+          <label class="gallery-toggle"><input type="checkbox" ${m.in_gallery?'checked':''} onchange="toggleGallery('${m.id}', this.checked)"> Gallery</label>
         </div>
-        <div class="m-actions"><button class="btn btn-danger" onclick="deleteMedia('${m.id}')">Delete</button></div>
+        <div class="m-actions"><button class="btn btn-danger" onclick="deleteMedia('${m.id}', '${m.storage_path}')">Delete</button></div>
       </div>`;
     grid.appendChild(item);
   });
 }
 
-function updateCategory(id, category){
-  setMedia(getMedia().map(m => m.id===id ? {...m, category} : m));
+async function updateCategory(id, category){
+  const { error } = await sb.from('media').update({ category }).eq('id', id);
+  if(error){ alert('Could not update category: ' + error.message); }
   render();
 }
-function toggleGallery(id, inGallery){
-  setMedia(getMedia().map(m => m.id===id ? {...m, inGallery} : m));
+async function toggleGallery(id, inGallery){
+  const { error } = await sb.from('media').update({ in_gallery: inGallery }).eq('id', id);
+  if(error){ alert('Could not update: ' + error.message); }
 }
-function deleteMedia(id){
+async function deleteMedia(id, storagePath){
   if(!confirm('Delete this file?')) return;
-  setMedia(getMedia().filter(m=>m.id!==id));
+  await deleteMediaFile(storagePath);
+  const { error } = await sb.from('media').delete().eq('id', id);
+  if(error){ alert('Could not delete record: ' + error.message); }
   render();
 }
 
-render();
+(async ()=>{
+  const session = await requireAdminAuth();
+  if(session) render();
+})();
 </script>
 </body>
 </html>

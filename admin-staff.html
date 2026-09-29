@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>St. Eric CMS — Staff Directory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+  :root{--navy-900:#0c2540;--navy-700:#1a4470;--gold:#f2ac3c;--bg:#f4f7fa;--panel:#f7f9fb;--ink:#12202f;--ink-soft:#64758a;--line:#e6ebf1;--ok:#1e9e64;--warn:#c94f4f;box-sizing:border-box}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  h1,h2,h3,.brand{font-family:'Poppins',system-ui,sans-serif}
+  a{color:inherit;text-decoration:none} img{max-width:100%;display:block} button{font-family:'Inter'}
+  .shell{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+  @media (max-width:880px){.shell{grid-template-columns:1fr}}
+  .sidebar{background:var(--navy-900);color:#cfe0ee;padding:20px 16px;position:sticky;top:0;height:100vh;overflow-y:auto}
+  @media (max-width:880px){.sidebar{display:none}}
+  .sb-brand{display:flex;align-items:center;gap:10px;padding:6px 6px 20px;border-bottom:1px solid #1e3a5c;margin-bottom:16px}
+  .sb-crest{width:32px;height:32px;border-radius:50%;overflow:hidden;flex:none;background:#fff}
+  .sb-brand span{font-size:13.5px;font-weight:700;color:#fff}
+  .sb-group-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#5c7896;margin:18px 10px 6px}
+  .sb-group-label:first-of-type{margin-top:0}
+  .sb-link{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;font-size:13.5px;font-weight:500;color:#cfe0ee}
+  .sb-link:hover{background:#152f4d} .sb-link.active{background:var(--navy-700);color:#fff;font-weight:600} .sb-link .ico{width:16px;text-align:center;font-size:14px}
+  .topbar{background:#fff;border-bottom:1px solid var(--line);padding:14px 26px;display:flex;justify-content:space-between;align-items:center;padding-top:calc(14px + env(safe-area-inset-top,0px))}
+  .topbar h1{font-size:16px} .topbar .who{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--ink-soft)}
+  .avatar{width:32px;height:32px;border-radius:50%;background:var(--panel);border:1px solid var(--line)}
+  .content{padding:28px 26px 50px}
+  .head-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+  .head-row h2{font-size:20px;color:var(--navy-900)}
+  .btn{border:none;border-radius:8px;padding:11px 18px;font-size:13.5px;font-weight:600;cursor:pointer}
+  .btn-primary{background:var(--gold);color:var(--navy-900)} .btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink-soft)} .btn-danger{background:#fbebeb;color:var(--warn)}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  @media (max-width:820px){.grid{grid-template-columns:repeat(2,1fr)}}
+  .p-card{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;text-align:center}
+  .p-photo{aspect-ratio:1/1;background:var(--panel)}
+  .p-body{padding:12px}
+  .p-body h3{font-size:13.5px} .p-body span{font-size:12px;color:var(--ink-soft);display:block;margin-top:2px}
+  .p-actions{display:flex;gap:6px;justify-content:center;margin-top:10px}
+  .p-actions button{padding:6px 10px;font-size:11.5px;border-radius:6px}
+  .empty{padding:40px 0;text-align:center;color:var(--ink-soft);font-size:14px}
+  .overlay{display:none;position:fixed;inset:0;background:rgba(12,37,64,.5);z-index:100;align-items:center;justify-content:center;padding:20px}
+  .overlay.open{display:flex}
+  .modal{background:#fff;border-radius:14px;padding:26px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
+  .modal h3{font-size:16px;margin-bottom:16px;color:var(--navy-900)}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;color:var(--ink-soft)}
+  .field input,.field select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13.5px;font-family:'Inter';background:var(--panel)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+  .thumb-preview{width:70px;height:70px;border-radius:10px;overflow:hidden;background:var(--panel);margin-bottom:8px}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="sb-brand"><div class="sb-crest"><img src="assets/logo.png" alt="St. Eric High School logo"></div><span>ST. ERIC CMS</span></div>
+    <a class="sb-link" href="admin-dashboard.html"><span class="ico">🏠</span>Dashboard</a>
+    <div class="sb-group-label">Pages</div>
+    <a class="sb-link" href="admin-homepage.html"><span class="ico">🏡</span>Homepage</a>
+    <a class="sb-link" href="admin-history.html"><span class="ico">📜</span>History Timeline</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">🎯</span>Vision &amp; Mission</a>
+    <a class="sb-link" href="admin-leadership.html"><span class="ico">🧑‍💼</span>Leadership</a>
+    <a class="sb-link active" href="admin-staff.html"><span class="ico">🧑‍🏫</span>Staff Directory</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">🏛️</span>Departments &amp; Subjects</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">📆</span>Academic Calendar</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">📝</span>Admissions (O &amp; A-Level)</a>
+    <a class="sb-link" href="admin-clubs.html"><span class="ico">🎭</span>Clubs</a>
+    <div class="sb-group-label">Website</div>
+    <a class="sb-link" href="admin-news.html"><span class="ico">📰</span>News</a>
+    <a class="sb-link" href="admin-events.html"><span class="ico">📅</span>Events</a>
+    <a class="sb-link" href="admin-announcements.html"><span class="ico">📣</span>Announcements</a>
+    <a class="sb-link" href="admin-scoreboard.html"><span class="ico">🏆</span>Scoreboard &amp; Results</a>
+    <a class="sb-link" href="#"><span class="ico">🥇</span>Achievements</a>
+    <a class="sb-link" href="admin-media.html"><span class="ico">🖼️</span>Gallery</a>
+    <a class="sb-link" href="admin-media.html"><span class="ico">🗂️</span>Media Library</a>
+    <a class="sb-link" href="admin-messages.html"><span class="ico">✉️</span>Messages</a>
+    <div class="sb-group-label">Learning Hub</div>
+    <a class="sb-link" href="#"><span class="ico">📝</span>Notes</a>
+    <a class="sb-link" href="#"><span class="ico">📂</span>Resources</a>
+    <a class="sb-link" href="#"><span class="ico">📄</span>Past Papers</a>
+    <div class="sb-group-label">School</div>
+    <a class="sb-link" href="#"><span class="ico">📞</span>Contact Info</a>
+    <a class="sb-link" href="#"><span class="ico">🔗</span>Social Links</a>
+    <a class="sb-link" href="#"><span class="ico">🗓️</span>Important Dates</a>
+    <a class="sb-link" href="#"><span class="ico">🎨</span>Branding</a>
+    <div class="sb-group-label">Settings</div>
+    <a class="sb-link" href="#"><span class="ico">👥</span>Users</a>
+    <a class="sb-link" href="#"><span class="ico">🛡️</span>Roles</a>
+    <a class="sb-link" href="#"><span class="ico">⚙️</span>Settings</a>
+  </aside>
+  <div>
+    <div class="topbar"><h1>Staff Directory</h1><div class="who"><div class="avatar"></div>Admin <a href="#" onclick="adminSignOut();return false" style="margin-left:10px;color:var(--ink-soft);text-decoration:underline">Sign out</a></div></div>
+    <div class="content">
+      <div class="head-row"><h2>Teaching &amp; Support Staff</h2><button class="btn btn-primary" onclick="openModal()">+ Add Staff Member</button></div>
+      <div class="grid" id="staff-grid"></div>
+      <div id="empty-msg" class="empty" style="display:none">No staff added yet.</div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h3 id="modal-title">Add Staff Member</h3>
+    <input type="hidden" id="edit-id"><input type="hidden" id="edit-photo-path">
+    <div class="field"><label>Photo</label>
+      <div class="thumb-preview" id="thumb-preview"></div>
+      <input type="file" id="f-photo" accept="image/*">
+    </div>
+    <div class="field"><label>Name</label><input type="text" id="f-name" placeholder="e.g. Mrs. J. Moyo"></div>
+    <div class="two">
+      <div class="field"><label>Subject</label><input type="text" id="f-subject" placeholder="e.g. Mathematics"></div>
+      <div class="field"><label>Department</label>
+        <select id="f-department"><option>Mathematics & Science</option><option>Languages & Humanities</option><option>Business Studies & Technical</option><option>Leadership & Support Staff</option></select>
+      </div>
+    </div>
+    <div class="field"><label>Sort Order (lower shows first)</label><input type="number" id="f-sort" value="0"></div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveStaff()">Save</button></div>
+  </div>
+</div>
+
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/r2-client.js"></script>
+<script>
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+async function getStaff(){
+  const { data, error } = await sb.from('staff').select('*').order('sort_order', { ascending:true });
+  if(error){ console.error(error); alert('Could not load staff: ' + error.message); return []; }
+  return data;
+}
+
+async function render(){
+  const list = await getStaff();
+  const grid = document.getElementById('staff-grid');
+  const emptyMsg = document.getElementById('empty-msg');
+  grid.innerHTML = '';
+  if(list.length === 0){ emptyMsg.style.display='block'; return; }
+  emptyMsg.style.display='none';
+  list.forEach(s=>{
+    const card = document.createElement('div');
+    card.className = 'p-card';
+    card.innerHTML = `
+      <div class="p-photo">${s.photo_path ? `<img src="${publicUrl(s.photo_path)}" alt="${escapeHtml(s.name)}">` : ''}</div>
+      <div class="p-body">
+        <h3>${escapeHtml(s.name)}</h3><span>${escapeHtml(s.subject||'')}</span><span>${escapeHtml(s.department)}</span>
+        <div class="p-actions">
+          <button class="btn btn-ghost" onclick="editStaff('${s.id}')">Edit</button>
+          <button class="btn btn-danger" onclick="deleteStaff('${s.id}')">Delete</button>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function openModal(){
+  document.getElementById('modal-title').textContent = 'Add Staff Member';
+  document.getElementById('edit-id').value = ''; document.getElementById('edit-photo-path').value = '';
+  document.getElementById('f-name').value = ''; document.getElementById('f-subject').value = '';
+  document.getElementById('f-department').value = 'Mathematics & Science'; document.getElementById('f-sort').value = 0;
+  document.getElementById('f-photo').value = ''; document.getElementById('thumb-preview').innerHTML = '';
+  document.getElementById('overlay').classList.add('open');
+}
+async function editStaff(id){
+  const list = await getStaff(); const s = list.find(x=>x.id===id); if(!s) return;
+  document.getElementById('modal-title').textContent = 'Edit Staff Member';
+  document.getElementById('edit-id').value = s.id; document.getElementById('edit-photo-path').value = s.photo_path || '';
+  document.getElementById('f-name').value = s.name; document.getElementById('f-subject').value = s.subject || '';
+  document.getElementById('f-department').value = s.department; document.getElementById('f-sort').value = s.sort_order;
+  document.getElementById('f-photo').value = '';
+  document.getElementById('thumb-preview').innerHTML = s.photo_path ? `<img src="${publicUrl(s.photo_path)}">` : '';
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal(){ document.getElementById('overlay').classList.remove('open'); }
+
+async function saveStaff(){
+  const id = document.getElementById('edit-id').value;
+  const name = document.getElementById('f-name').value.trim();
+  if(!name){ alert('Please enter a name.'); return; }
+  let photoPath = document.getElementById('edit-photo-path').value;
+  const file = document.getElementById('f-photo').files[0];
+  if(file){
+    try{
+      const { url } = await uploadToR2(file, 'staff');
+      photoPath = url;
+    }catch(e){ alert('Photo upload failed: ' + e.message); return; }
+  }
+  const data = {
+    name, subject: document.getElementById('f-subject').value.trim(),
+    department: document.getElementById('f-department').value,
+    sort_order: Number(document.getElementById('f-sort').value || 0),
+    photo_path: photoPath
+  };
+  let error;
+  if(id){ ({ error } = await sb.from('staff').update(data).eq('id', id)); }
+  else { ({ error } = await sb.from('staff').insert(data)); }
+  if(error){ alert('Could not save: ' + error.message); return; }
+  closeModal(); render();
+}
+async function deleteStaff(id){
+  if(!confirm('Delete this staff member?')) return;
+  const { error } = await sb.from('staff').delete().eq('id', id);
+  if(error){ alert('Could not delete: ' + error.message); return; }
+  render();
+}
+
+(async ()=>{ const session = await requireAdminAuth(); if(session) render(); })();
+</script>
+</body>
+</html>

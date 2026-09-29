@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{--navy-900:#0c2540;--navy-800:#123457;--navy-700:#1a4470;--cyan:#2fa8d9;--gold:#f2ac3c;
     --bg:#f4f7fa;--panel:#f7f9fb;--ink:#12202f;--ink-soft:#64758a;--line:#e6ebf1;
@@ -90,15 +91,15 @@
     </div>
     <a class="sb-link" href="admin-dashboard.html"><span class="ico">🏠</span>Dashboard</a>
     <div class="sb-group-label">Pages</div>
-    <a class="sb-link" href="#"><span class="ico">🏡</span>Homepage</a>
-    <a class="sb-link" href="#"><span class="ico">📜</span>History Timeline</a>
-    <a class="sb-link" href="#"><span class="ico">🎯</span>Vision &amp; Mission</a>
-    <a class="sb-link" href="#"><span class="ico">🧑‍💼</span>Leadership</a>
-    <a class="sb-link" href="#"><span class="ico">🧑‍🏫</span>Staff Directory</a>
-    <a class="sb-link" href="#"><span class="ico">🏛️</span>Departments &amp; Subjects</a>
-    <a class="sb-link" href="#"><span class="ico">📆</span>Academic Calendar</a>
-    <a class="sb-link" href="#"><span class="ico">📝</span>Admissions (O &amp; A-Level)</a>
-    <a class="sb-link" href="#"><span class="ico">🎭</span>Clubs</a>
+    <a class="sb-link" href="admin-homepage.html"><span class="ico">🏡</span>Homepage</a>
+    <a class="sb-link" href="admin-history.html"><span class="ico">📜</span>History Timeline</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">🎯</span>Vision &amp; Mission</a>
+    <a class="sb-link" href="admin-leadership.html"><span class="ico">🧑‍💼</span>Leadership</a>
+    <a class="sb-link" href="admin-staff.html"><span class="ico">🧑‍🏫</span>Staff Directory</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">🏛️</span>Departments &amp; Subjects</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">📆</span>Academic Calendar</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">📝</span>Admissions (O &amp; A-Level)</a>
+    <a class="sb-link" href="admin-clubs.html"><span class="ico">🎭</span>Clubs</a>
     <div class="sb-group-label">Website</div>
     <a class="sb-link" href="admin-news.html"><span class="ico">📰</span>News</a>
     <a class="sb-link" href="admin-events.html"><span class="ico">📅</span>Events</a>
@@ -107,7 +108,7 @@
     <a class="sb-link" href="#"><span class="ico">🥇</span>Achievements</a>
     <a class="sb-link" href="admin-media.html"><span class="ico">🖼️</span>Gallery</a>
     <a class="sb-link" href="admin-media.html"><span class="ico">🗂️</span>Media Library</a>
-    <a class="sb-link" href="#"><span class="ico">✉️</span>Messages</a>
+    <a class="sb-link" href="admin-messages.html"><span class="ico">✉️</span>Messages</a>
     <div class="sb-group-label">Learning Hub</div>
     <a class="sb-link" href="#"><span class="ico">📝</span>Notes</a>
     <a class="sb-link" href="#"><span class="ico">📂</span>Resources</a>
@@ -126,7 +127,7 @@
   <div>
     <div class="topbar">
       <h1>Announcements</h1>
-      <div class="who"><div class="avatar"></div>Admin</div>
+      <div class="who"><div class="avatar"></div>Admin <a href="#" onclick="adminSignOut();return false" style="margin-left:10px;color:var(--ink-soft);text-decoration:underline">Sign out</a></div>
     </div>
 
     <div class="content">
@@ -163,20 +164,13 @@
   </div>
 </div>
 
+<script src="assets/js/supabase-client.js"></script>
 <script>
-const STORE_KEY = 'steric_cms_announcements';
-
-function seedIfEmpty(){
-  if(!localStorage.getItem(STORE_KEY)){
-    const seed = [
-      {id: crypto.randomUUID(), title:'School Closure Notice', body:'The school will be closed on Friday due to a public holiday.', priority:'urgent', status:'draft', date:'2026-03-28'},
-      {id: crypto.randomUUID(), title:'Term 2 Fee Payment Reminder', body:'Term 2 fees are due by the second week of the term.', priority:'notice', status:'published', date:'2026-04-20'}
-    ];
-    localStorage.setItem(STORE_KEY, JSON.stringify(seed));
-  }
+async function getItems(){
+  const { data, error } = await sb.from('announcements').select('*').order('announcement_date', { ascending:false });
+  if(error){ console.error(error); alert('Could not load announcements: ' + error.message); return []; }
+  return data;
 }
-function getItems(){ return JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); }
-function setItems(list){ localStorage.setItem(STORE_KEY, JSON.stringify(list)); }
 
 function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -188,8 +182,8 @@ function formatDate(iso){
 }
 function priorityLabel(p){ return {urgent:'Urgent', notice:'Notice', info:'Info'}[p] || 'Info'; }
 
-function render(){
-  const list = getItems().sort((a,b)=> b.date.localeCompare(a.date));
+async function render(){
+  const list = await getItems();
   const container = document.getElementById('a-list');
   const emptyMsg = document.getElementById('empty-msg');
   container.innerHTML = '';
@@ -205,8 +199,8 @@ function render(){
           <span class="status ${a.status}">${a.status === 'published' ? 'Published' : 'Draft'}</span>
         </div>
         <h3>${escapeHtml(a.title)}</h3>
-        <p>${escapeHtml(a.body)}</p>
-        <span class="date">${formatDate(a.date)}</span>
+        <p>${escapeHtml(a.body || '')}</p>
+        <span class="date">${formatDate(a.announcement_date)}</span>
       </div>
       <div class="row-actions">
         <button class="btn btn-ghost" onclick="editItem('${a.id}')">Edit</button>
@@ -226,20 +220,21 @@ function openModal(){
   document.getElementById('f-date').value = new Date().toISOString().slice(0,10);
   document.getElementById('overlay').classList.add('open');
 }
-function editItem(id){
-  const a = getItems().find(x=>x.id===id);
+async function editItem(id){
+  const list = await getItems();
+  const a = list.find(x=>x.id===id);
   if(!a) return;
   document.getElementById('modal-title').textContent = 'Edit Announcement';
   document.getElementById('edit-id').value = a.id;
   document.getElementById('f-title').value = a.title;
-  document.getElementById('f-body').value = a.body;
+  document.getElementById('f-body').value = a.body || '';
   document.getElementById('f-priority').value = a.priority;
   document.getElementById('f-status').value = a.status;
-  document.getElementById('f-date').value = a.date;
+  document.getElementById('f-date').value = a.announcement_date;
   document.getElementById('overlay').classList.add('open');
 }
 function closeModal(){ document.getElementById('overlay').classList.remove('open'); }
-function saveAnnouncement(){
+async function saveAnnouncement(){
   const id = document.getElementById('edit-id').value;
   const title = document.getElementById('f-title').value.trim();
   if(!title){ alert('Please enter a title.'); return; }
@@ -248,23 +243,26 @@ function saveAnnouncement(){
     body: document.getElementById('f-body').value.trim(),
     priority: document.getElementById('f-priority').value,
     status: document.getElementById('f-status').value,
-    date: document.getElementById('f-date').value
+    announcement_date: document.getElementById('f-date').value
   };
-  let list = getItems();
-  if(id){ list = list.map(a => a.id === id ? {...a, ...data} : a); }
-  else { list.push({id: crypto.randomUUID(), ...data}); }
-  setItems(list);
+  let error;
+  if(id){ ({ error } = await sb.from('announcements').update(data).eq('id', id)); }
+  else { ({ error } = await sb.from('announcements').insert(data)); }
+  if(error){ alert('Could not save: ' + error.message); return; }
   closeModal();
   render();
 }
-function deleteItem(id){
+async function deleteItem(id){
   if(!confirm('Delete this announcement?')) return;
-  setItems(getItems().filter(a=>a.id!==id));
+  const { error } = await sb.from('announcements').delete().eq('id', id);
+  if(error){ alert('Could not delete: ' + error.message); return; }
   render();
 }
 
-seedIfEmpty();
-render();
+(async ()=>{
+  const session = await requireAdminAuth();
+  if(session) render();
+})();
 </script>
 </body>
 </html>

@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{--navy-900:#0c2540;--navy-800:#123457;--navy-700:#1a4470;--cyan:#2fa8d9;--gold:#f2ac3c;--gold-dark:#d98f22;
     --bg:#ffffff;--panel:#f7f9fb;--ink:#12202f;--ink-soft:#64758a;--line:#e6ebf1;box-sizing:border-box}
@@ -110,12 +111,13 @@
 <div class="wrap split">
   <div>
     <h2>Send Us a Message</h2>
-    <form onsubmit="event.preventDefault()">
-      <div class="field"><label>Full Name</label><input type="text" placeholder="Your name"></div>
-      <div class="field"><label>Email</label><input type="email" placeholder="you@example.com"></div>
-      <div class="field"><label>Subject</label><input type="text" placeholder="How can we help?"></div>
-      <div class="field"><label>Message</label><textarea placeholder="Write your message..."></textarea></div>
+    <form id="contact-form">
+      <div class="field"><label>Full Name</label><input type="text" id="c-name" placeholder="Your name" required></div>
+      <div class="field"><label>Email</label><input type="email" id="c-email" placeholder="you@example.com" required></div>
+      <div class="field"><label>Subject</label><input type="text" id="c-subject" placeholder="How can we help?"></div>
+      <div class="field"><label>Message</label><textarea id="c-message" placeholder="Write your message..." required></textarea></div>
       <button class="submit-btn" type="submit">Send Message</button>
+      <p id="form-status" style="margin-top:12px;font-size:13px"></p>
     </form>
   </div>
   <div>
@@ -134,7 +136,7 @@
       <div class="tagline">Excellence in Education, Faith &amp; Community</div>
     </div>
     <div><h4>Quick Links</h4><ul><li>About Us</li><li>Academics</li><li>Admissions</li><li>News &amp; Events</li><li>Contact</li></ul></div>
-    <div><h4>Community</h4><ul><li>Clubs &amp; Robotics</li><li>Learning Hub</li><li>Student Life</li><li>Gallery</li></ul></div>
+    <div><h4>Community</h4><ul><li>Clubs &amp; Robotics</li><li><a href="sports.html">Sports</a></li><li><a href="staff.html">Our Staff</a></li><li>Learning Hub</li><li>Student Life</li><li>Gallery</li></ul></div>
     <div><h4>Contact</h4><ul><li>19 St. Eric Road, Tynwald, Harare</li><li>+263 4 779 129 / 0772 123 456</li><li>info@stelichigh.org</li></ul></div>
   </div>
   <div class="wrap foot-bottom">
@@ -143,5 +145,27 @@
   </div>
 </footer>
 
+<script src="assets/js/supabase-client.js"></script>
+<script>
+document.getElementById('contact-form').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const statusEl = document.getElementById('form-status');
+  const data = {
+    full_name: document.getElementById('c-name').value.trim(),
+    email: document.getElementById('c-email').value.trim(),
+    subject: document.getElementById('c-subject').value.trim(),
+    message: document.getElementById('c-message').value.trim()
+  };
+  const { error } = await sb.from('messages').insert(data);
+  if(error){
+    statusEl.style.color = '#c94f4f';
+    statusEl.textContent = 'Something went wrong — please try again or call the school directly.';
+    return;
+  }
+  statusEl.style.color = '#1e9e64';
+  statusEl.textContent = 'Message sent — thank you! We\'ll get back to you soon.';
+  document.getElementById('contact-form').reset();
+});
+</script>
 </body>
 </html>

@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{--navy-900:#0c2540;--navy-800:#123457;--navy-700:#1a4470;--cyan:#2fa8d9;--gold:#f2ac3c;--gold-dark:#d98f22;
     --bg:#ffffff;--panel:#f7f9fb;--ink:#12202f;--ink-soft:#64758a;--line:#e6ebf1;box-sizing:border-box}
@@ -114,30 +115,15 @@
     <div class="panel active" id="p-dept">
       <h2>Our Departments</h2>
       <p>Each department is led by experienced staff dedicated to helping students grow in their chosen fields.</p>
-      <div class="dept-grid">
-        <div class="dept">📐 Mathematics</div>
-        <div class="dept">🔬 Science</div>
-        <div class="dept">🌍 Languages</div>
-        <div class="dept">📖 Humanities</div>
-        <div class="dept">📊 Business Studies</div>
-        <div class="dept">💻 Technical &amp; Applied</div>
-      </div>
+      <div class="dept-grid" id="dept-grid"></div>
     </div>
 
     <div class="panel" id="p-subjects">
       <h2>Subjects Offered</h2>
       <p><strong>O-Level:</strong></p>
-      <ul class="list">
-        <li>Mathematics, English, Combined Science</li>
-        <li>Shona, Heritage Studies, Business Studies</li>
-        <li>Computer Science / Technology, Accounts</li>
-      </ul>
+      <ul class="list" id="o-level-list"></ul>
       <p><strong>A-Level:</strong></p>
-      <ul class="list">
-        <li>Pure Mathematics, Physics, Chemistry, Biology</li>
-        <li>Business Studies, Accounting, Economics</li>
-        <li>Geography, Divinity, Computer Science</li>
-      </ul>
+      <ul class="list" id="a-level-list"></ul>
     </div>
 
     <div class="panel" id="p-olevel">
@@ -152,11 +138,8 @@
 
     <div class="panel" id="p-calendar">
       <h2>Academic Calendar</h2>
-      <table class="cal">
+      <table class="cal" id="calendar-table">
         <tr><th>Term</th><th>Opens</th><th>Closes</th></tr>
-        <tr><td>Term 1</td><td>13 Jan 2026</td><td>10 Apr 2026</td></tr>
-        <tr><td>Term 2</td><td>05 May 2026</td><td>31 Jul 2026</td></tr>
-        <tr><td>Term 3</td><td>08 Sep 2026</td><td>27 Nov 2026</td></tr>
       </table>
     </div>
   </div>
@@ -172,7 +155,7 @@
       <div class="tagline">Excellence in Education, Faith &amp; Community</div>
     </div>
     <div><h4>Quick Links</h4><ul><li>About Us</li><li>Academics</li><li>Admissions</li><li>News &amp; Events</li><li>Contact</li></ul></div>
-    <div><h4>Community</h4><ul><li>Clubs &amp; Robotics</li><li>Learning Hub</li><li>Student Life</li><li>Gallery</li></ul></div>
+    <div><h4>Community</h4><ul><li>Clubs &amp; Robotics</li><li><a href="sports.html">Sports</a></li><li><a href="staff.html">Our Staff</a></li><li>Learning Hub</li><li>Student Life</li><li>Gallery</li></ul></div>
     <div><h4>Contact</h4><ul><li>19 St. Eric Road, Tynwald, Harare</li><li>+263 4 779 129 / 0772 123 456</li><li>info@stelichigh.org</li></ul></div>
   </div>
   <div class="wrap foot-bottom">
@@ -190,6 +173,46 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     document.getElementById(btn.dataset.target).classList.add('active');
   });
 });
+</script>
+
+<script src="assets/js/supabase-client.js"></script>
+<script>
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function deptIcon(name){
+  const n = name.toLowerCase();
+  if(n.includes('math')) return '📐';
+  if(n.includes('scien')) return '🔬';
+  if(n.includes('language')) return '🌍';
+  if(n.includes('human')) return '📖';
+  if(n.includes('business')) return '📊';
+  if(n.includes('technical') || n.includes('tech')) return '💻';
+  return '🏛️';
+}
+function formatDate(iso){
+  if(!iso) return '';
+  const d = new Date(iso + 'T00:00:00');
+  return d.toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'});
+}
+
+async function loadDeptsSubjects(){
+  const { data, error } = await sb.from('site_settings').select('*').eq('key','departments_subjects').single();
+  if(error || !data) return;
+  const v = data.value;
+  document.getElementById('dept-grid').innerHTML = (v.departments || []).map(d => `<div class="dept">${deptIcon(d)} ${escapeHtml(d)}</div>`).join('');
+  document.getElementById('o-level-list').innerHTML = (v.o_level_subjects || []).map(s => `<li>${escapeHtml(s)}</li>`).join('');
+  document.getElementById('a-level-list').innerHTML = (v.a_level_subjects || []).map(s => `<li>${escapeHtml(s)}</li>`).join('');
+}
+
+async function loadCalendar(){
+  const { data, error } = await sb.from('site_settings').select('*').eq('key','academic_calendar').single();
+  const table = document.getElementById('calendar-table');
+  if(error || !data){ return; }
+  table.innerHTML = '<tr><th>Term</th><th>Opens</th><th>Closes</th></tr>' +
+    data.value.map(t => `<tr><td>${escapeHtml(t.term)}</td><td>${formatDate(t.opens)}</td><td>${formatDate(t.closes)}</td></tr>`).join('');
+}
+
+loadDeptsSubjects();
+loadCalendar();
 </script>
 </body>
 </html>

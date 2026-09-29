@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{--navy-900:#0c2540;--navy-800:#123457;--navy-700:#1a4470;--cyan:#2fa8d9;--gold:#f2ac3c;--gold-dark:#d98f22;
     --bg:#ffffff;--panel:#f7f9fb;--ink:#12202f;--ink-soft:#64758a;--line:#e6ebf1;box-sizing:border-box}
@@ -114,13 +115,7 @@
     <div class="panel active" id="p-clubs">
       <h2>Clubs &amp; Societies</h2>
       <p>Students are encouraged to explore their interests beyond the classroom through our range of clubs.</p>
-      <div class="club-card">
-        <div><h3>Robotics Club</h3><span>Future Innovators, Future Engineers &amp; RoboStarters</span></div>
-        <a class="club-link" href="#">Visit Club Site →</a>
-      </div>
-      <div class="club-card"><div><h3>Debate Club</h3><span>Public speaking &amp; critical thinking</span></div></div>
-      <div class="club-card"><div><h3>Art &amp; Drama Club</h3><span>Creative arts and stage performance</span></div></div>
-      <div class="club-card"><div><h3>Environment Club</h3><span>Sustainability and community projects</span></div></div>
+      <div id="club-list"><p style="color:var(--ink-soft);font-size:13px">Loading clubs...</p></div>
     </div>
 
     <div class="panel" id="p-sports">
@@ -164,7 +159,7 @@
       <div class="tagline">Excellence in Education, Faith &amp; Community</div>
     </div>
     <div><h4>Quick Links</h4><ul><li>About Us</li><li>Academics</li><li>Admissions</li><li>News &amp; Events</li><li>Contact</li></ul></div>
-    <div><h4>Community</h4><ul><li>Clubs &amp; Robotics</li><li><a href="sports.html">Sports</a></li><li>Learning Hub</li><li>Student Life</li><li>Gallery</li></ul></div>
+    <div><h4>Community</h4><ul><li>Clubs &amp; Robotics</li><li><a href="sports.html">Sports</a></li><li><a href="staff.html">Our Staff</a></li><li>Learning Hub</li><li>Student Life</li><li>Gallery</li></ul></div>
     <div><h4>Contact</h4><ul><li>19 St. Eric Road, Tynwald, Harare</li><li>+263 4 779 129 / 0772 123 456</li><li>info@stelichigh.org</li></ul></div>
   </div>
   <div class="wrap foot-bottom">
@@ -182,6 +177,23 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     document.getElementById(btn.dataset.target).classList.add('active');
   });
 });
+</script>
+
+<script src="assets/js/supabase-client.js"></script>
+<script>
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+async function loadClubs(){
+  const container = document.getElementById('club-list');
+  const { data, error } = await sb.from('clubs').select('*').order('sort_order', { ascending:true });
+  if(error || !data || data.length === 0){ container.innerHTML = '<p style="color:var(--ink-soft);font-size:13px">Club listing coming soon.</p>'; return; }
+  container.innerHTML = data.map(c => `
+    <div class="club-card">
+      <div><h3>${escapeHtml(c.name)}</h3><span>${escapeHtml(c.description || '')}</span></div>
+      ${c.link_url ? `<a class="club-link" href="${escapeHtml(c.link_url)}">Visit Club Site →</a>` : ''}
+    </div>`).join('');
+}
+loadClubs();
 </script>
 </body>
 </html>

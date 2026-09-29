@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{--navy-900:#0c2540;--navy-800:#123457;--navy-700:#1a4470;--cyan:#2fa8d9;--gold:#f2ac3c;--gold-dark:#d98f22;
     --bg:#ffffff;--panel:#f7f9fb;--ink:#12202f;--ink-soft:#64758a;--line:#e6ebf1;box-sizing:border-box}
@@ -114,55 +115,34 @@
   <div>
     <div class="panel active" id="p-o-req">
       <h2>O-Level Requirements</h2>
-      <ul class="list">
-        <li>Completed application form</li>
-        <li>Copy of birth certificate</li>
-        <li>Previous school report(s)</li>
-        <li>2 passport photos</li>
-        <li>Interview (if required)</li>
-      </ul>
+      <ul class="list" id="o-req-list"></ul>
     </div>
     <div class="panel" id="p-o-app">
       <h2>O-Level Application Process</h2>
-      <ul class="list">
-        <li>Submit the completed application form with all required documents</li>
-        <li>Attend an interview / assessment if invited</li>
-        <li>Receive confirmation of placement</li>
-        <li>Pay the confirmation deposit to secure the place</li>
-      </ul>
+      <ul class="list" id="o-app-list"></ul>
     </div>
     <div class="panel" id="p-o-fee">
       <h2>O-Level Fees</h2>
       <div class="fee-row"><span>Tuition (per term)</span><span class="v">Contact school office</span></div>
       <div class="fee-row"><span>Registration fee</span><span class="v">Contact school office</span></div>
       <div class="fee-row"><span>Development levy</span><span class="v">Contact school office</span></div>
-      <p style="margin-top:14px">Exact figures are confirmed with the school office each term — please contact us for the current fee schedule.</p>
+      <p style="margin-top:14px" id="o-fee-note"></p>
     </div>
 
     <div class="panel" id="p-a-req">
       <h2>A-Level Requirements</h2>
-      <ul class="list">
-        <li>O-Level results (minimum 5 subjects, including Mathematics and English)</li>
-        <li>Completed application form</li>
-        <li>Copy of birth certificate</li>
-        <li>2 passport photos</li>
-      </ul>
+      <ul class="list" id="a-req-list"></ul>
     </div>
     <div class="panel" id="p-a-app">
       <h2>A-Level Application Process</h2>
-      <ul class="list">
-        <li>Submit application with O-Level results and required documents</li>
-        <li>Select intended A-Level subject combination</li>
-        <li>Attend a subject-placement consultation</li>
-        <li>Pay the confirmation deposit to secure the place</li>
-      </ul>
+      <ul class="list" id="a-app-list"></ul>
     </div>
     <div class="panel" id="p-a-fee">
       <h2>A-Level Fees</h2>
       <div class="fee-row"><span>Tuition (per term)</span><span class="v">Contact school office</span></div>
       <div class="fee-row"><span>Registration fee</span><span class="v">Contact school office</span></div>
       <div class="fee-row"><span>Development levy</span><span class="v">Contact school office</span></div>
-      <p style="margin-top:14px">Exact figures are confirmed with the school office each term — please contact us for the current fee schedule.</p>
+      <p style="margin-top:14px" id="a-fee-note"></p>
     </div>
   </div>
 </div>
@@ -177,7 +157,7 @@
       <div class="tagline">Excellence in Education, Faith &amp; Community</div>
     </div>
     <div><h4>Quick Links</h4><ul><li>About Us</li><li>Academics</li><li>Admissions</li><li>News &amp; Events</li><li>Contact</li></ul></div>
-    <div><h4>Community</h4><ul><li>Clubs &amp; Robotics</li><li>Learning Hub</li><li>Student Life</li><li>Gallery</li></ul></div>
+    <div><h4>Community</h4><ul><li>Clubs &amp; Robotics</li><li><a href="sports.html">Sports</a></li><li><a href="staff.html">Our Staff</a></li><li>Learning Hub</li><li>Student Life</li><li>Gallery</li></ul></div>
     <div><h4>Contact</h4><ul><li>19 St. Eric Road, Tynwald, Harare</li><li>+263 4 779 129 / 0772 123 456</li><li>info@stelichigh.org</li></ul></div>
   </div>
   <div class="wrap foot-bottom">
@@ -195,6 +175,23 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     document.getElementById(btn.dataset.target).classList.add('active');
   });
 });
+</script>
+
+<script src="assets/js/supabase-client.js"></script>
+<script>
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+async function loadAdmissions(level, reqId, appId, feeId){
+  const { data, error } = await sb.from('site_settings').select('*').eq('key', `admissions_${level}`).single();
+  if(error || !data) return;
+  const v = data.value;
+  document.getElementById(reqId).innerHTML = (v.requirements || []).map(r => `<li>${escapeHtml(r)}</li>`).join('');
+  document.getElementById(appId).innerHTML = (v.application_steps || []).map(a => `<li>${escapeHtml(a)}</li>`).join('');
+  document.getElementById(feeId).textContent = v.fees_note || '';
+}
+
+loadAdmissions('o_level', 'o-req-list', 'o-app-list', 'o-fee-note');
+loadAdmissions('a_level', 'a-req-list', 'a-app-list', 'a-fee-note');
 </script>
 </body>
 </html>

@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{--navy-900:#0c2540;--navy-800:#123457;--navy-700:#1a4470;--cyan:#2fa8d9;--gold:#f2ac3c;--gold-dark:#d98f22;
     --bg:#ffffff;--panel:#f7f9fb;--ink:#12202f;--ink-soft:#64758a;--line:#e6ebf1;box-sizing:border-box}
@@ -97,44 +98,8 @@
   <p>From a small community school to a respected O-Level and A-Level institution — this is the story of St. Eric High School, told through the moments that shaped it.</p>
 </div>
 
-<div class="wrap timeline">
-
-  <div class="t-item">
-    <div class="t-dot"></div>
-    <div class="t-year">The Beginning</div>
-    <h2>Where It Started</h2>
-    <div class="t-photo"><img src="assets/history-founding.jpg" alt="The school's original building"></div>
-    <div class="caption">The original school building, at the very start of St. Eric High School's journey.</div>
-    <p>St. Eric High School began as a small community school with a handful of classrooms, founded on the belief that every child deserves an education rooted in strong values and academic excellence.</p>
-  </div>
-
-  <div class="t-item">
-    <div class="t-dot"></div>
-    <div class="t-year">Early Growth</div>
-    <h2>Building the Foundation</h2>
-    <div class="t-photo"><img src="assets/history-early-years.jpg" alt="Early students and staff"></div>
-    <div class="caption">Some of our earliest students and staff, in the school's first years.</div>
-    <p>As enrolment grew, so did the campus — new classrooms, a library, and sports facilities were added to keep pace with a growing student body and an expanding academic program.</p>
-  </div>
-
-  <div class="t-item">
-    <div class="t-dot"></div>
-    <div class="t-year">Becoming a Full Secondary School</div>
-    <h2>O-Level &amp; A-Level Expansion</h2>
-    <div class="t-photo"><img src="assets/history-expansion.jpg" alt="Campus expansion"></div>
-    <div class="caption">Construction of new classroom blocks during the school's expansion into a full secondary institution.</div>
-    <p>St. Eric High School expanded its offering to include both O-Level and A-Level programs, opening the door for students to complete their full secondary education on one campus.</p>
-  </div>
-
-  <div class="t-item">
-    <div class="t-dot"></div>
-    <div class="t-year">Today</div>
-    <h2>St. Eric High School Now</h2>
-    <div class="t-photo"><img src="assets/history-today.jpg" alt="The school today"></div>
-    <div class="caption">St. Eric High School's campus today — home to academics, sports, the arts, and student-led innovation.</div>
-    <p>Today, St. Eric High School is a respected institution known for producing well-rounded, responsible and successful individuals — with student-led programs like our Robotics Club carrying that same spirit of innovation into the future.</p>
-  </div>
-
+<div class="wrap timeline" id="timeline">
+  <p style="color:var(--ink-soft);padding-left:56px">Loading timeline...</p>
 </div>
 
 <footer>
@@ -147,7 +112,7 @@
       <div class="tagline">Excellence in Education, Faith &amp; Community</div>
     </div>
     <div><h4>Quick Links</h4><ul><li>About Us</li><li>Academics</li><li>Admissions</li><li>News &amp; Events</li><li>Contact</li></ul></div>
-    <div><h4>Community</h4><ul><li>Clubs &amp; Robotics</li><li>Learning Hub</li><li>Student Life</li><li>Gallery</li></ul></div>
+    <div><h4>Community</h4><ul><li>Clubs &amp; Robotics</li><li><a href="sports.html">Sports</a></li><li><a href="staff.html">Our Staff</a></li><li>Learning Hub</li><li>Student Life</li><li>Gallery</li></ul></div>
     <div><h4>Contact</h4><ul><li>19 St. Eric Road, Tynwald, Harare</li><li>+263 4 779 129 / 0772 123 456</li><li>info@stelichigh.org</li></ul></div>
   </div>
   <div class="foot-bottom">
@@ -156,5 +121,26 @@
   </div>
 </footer>
 
+<script src="assets/js/supabase-client.js"></script>
+<script>
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function publicUrl(value){ if(!value) return ''; if(value.startsWith('http')) return value; return sb.storage.from('media').getPublicUrl(value).data.publicUrl; }
+
+async function loadTimeline(){
+  const container = document.getElementById('timeline');
+  const { data, error } = await sb.from('history_timeline').select('*').order('sort_order', { ascending:true });
+  if(error || !data || data.length === 0){ container.innerHTML = '<p style="color:var(--ink-soft);padding-left:56px">History timeline coming soon.</p>'; return; }
+  container.innerHTML = data.map(t => `
+    <div class="t-item">
+      <div class="t-dot"></div>
+      <div class="t-year">${escapeHtml(t.year_label)}</div>
+      <h2>${escapeHtml(t.title)}</h2>
+      ${t.photo_path ? `<div class="t-photo"><img src="${publicUrl(t.photo_path)}" alt="${escapeHtml(t.title)}"></div>` : ''}
+      ${t.caption ? `<div class="caption">${escapeHtml(t.caption)}</div>` : ''}
+      <p>${escapeHtml(t.body || '')}</p>
+    </div>`).join('');
+}
+loadTimeline();
+</script>
 </body>
 </html>

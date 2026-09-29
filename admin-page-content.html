@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>St. Eric CMS — Page Content</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+  :root{--navy-900:#0c2540;--navy-700:#1a4470;--gold:#f2ac3c;--bg:#f4f7fa;--panel:#f7f9fb;--ink:#12202f;--ink-soft:#64758a;--line:#e6ebf1;--ok:#1e9e64;--warn:#c94f4f;box-sizing:border-box}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  h1,h2,h3,.brand{font-family:'Poppins',system-ui,sans-serif}
+  a{color:inherit;text-decoration:none} img{max-width:100%;display:block} button{font-family:'Inter'}
+  .shell{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+  @media (max-width:880px){.shell{grid-template-columns:1fr}}
+  .sidebar{background:var(--navy-900);color:#cfe0ee;padding:20px 16px;position:sticky;top:0;height:100vh;overflow-y:auto}
+  @media (max-width:880px){.sidebar{display:none}}
+  .sb-brand{display:flex;align-items:center;gap:10px;padding:6px 6px 20px;border-bottom:1px solid #1e3a5c;margin-bottom:16px}
+  .sb-crest{width:32px;height:32px;border-radius:50%;overflow:hidden;flex:none;background:#fff}
+  .sb-brand span{font-size:13.5px;font-weight:700;color:#fff}
+  .sb-group-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#5c7896;margin:18px 10px 6px}
+  .sb-group-label:first-of-type{margin-top:0}
+  .sb-link{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;font-size:13.5px;font-weight:500;color:#cfe0ee}
+  .sb-link:hover{background:#152f4d} .sb-link.active{background:var(--navy-700);color:#fff;font-weight:600} .sb-link .ico{width:16px;text-align:center;font-size:14px}
+  .topbar{background:#fff;border-bottom:1px solid var(--line);padding:14px 26px;display:flex;justify-content:space-between;align-items:center;padding-top:calc(14px + env(safe-area-inset-top,0px))}
+  .topbar h1{font-size:16px} .topbar .who{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--ink-soft)}
+  .avatar{width:32px;height:32px;border-radius:50%;background:var(--panel);border:1px solid var(--line)}
+  .content{padding:28px 26px 60px;max-width:700px}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+  .tab-btn{background:#fff;border:1px solid var(--line);border-radius:20px;padding:8px 16px;font-size:12.5px;font-weight:600;color:var(--ink-soft);cursor:pointer}
+  .tab-btn.active{background:var(--navy-700);color:#fff;border-color:var(--navy-700)}
+  .section{display:none}
+  .section.active{display:block}
+  .panel-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;margin-bottom:20px}
+  .panel-card h3{font-size:15px;margin-bottom:6px;color:var(--navy-900)}
+  .panel-card .hint{font-size:12px;color:var(--ink-soft);margin-bottom:14px}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;color:var(--ink-soft)}
+  .field input,.field textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13.5px;font-family:'Inter';background:var(--panel)}
+  .field textarea{resize:vertical;min-height:90px}
+  .two{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .btn{border:none;border-radius:8px;padding:11px 20px;font-size:13.5px;font-weight:600;cursor:pointer}
+  .btn-primary{background:var(--gold);color:var(--navy-900)}
+  .save-status{font-size:12.5px;margin-left:12px}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="sb-brand"><div class="sb-crest"><img src="assets/logo.png" alt="St. Eric High School logo"></div><span>ST. ERIC CMS</span></div>
+    <a class="sb-link" href="admin-dashboard.html"><span class="ico">🏠</span>Dashboard</a>
+    <div class="sb-group-label">Pages</div>
+    <a class="sb-link" href="admin-homepage.html"><span class="ico">🏡</span>Homepage</a>
+    <a class="sb-link" href="admin-history.html"><span class="ico">📜</span>History Timeline</a>
+    <a class="sb-link active" href="admin-page-content.html"><span class="ico">🎯</span>Vision &amp; Mission</a>
+    <a class="sb-link" href="admin-leadership.html"><span class="ico">🧑‍💼</span>Leadership</a>
+    <a class="sb-link" href="admin-staff.html"><span class="ico">🧑‍🏫</span>Staff Directory</a>
+    <a class="sb-link active" href="admin-page-content.html"><span class="ico">🏛️</span>Departments &amp; Subjects</a>
+    <a class="sb-link active" href="admin-page-content.html"><span class="ico">📆</span>Academic Calendar</a>
+    <a class="sb-link active" href="admin-page-content.html"><span class="ico">📝</span>Admissions (O &amp; A-Level)</a>
+    <a class="sb-link" href="admin-clubs.html"><span class="ico">🎭</span>Clubs</a>
+    <div class="sb-group-label">Website</div>
+    <a class="sb-link" href="admin-news.html"><span class="ico">📰</span>News</a>
+    <a class="sb-link" href="admin-events.html"><span class="ico">📅</span>Events</a>
+    <a class="sb-link" href="admin-announcements.html"><span class="ico">📣</span>Announcements</a>
+    <a class="sb-link" href="admin-scoreboard.html"><span class="ico">🏆</span>Scoreboard &amp; Results</a>
+    <a class="sb-link" href="#"><span class="ico">🥇</span>Achievements</a>
+    <a class="sb-link" href="admin-media.html"><span class="ico">🖼️</span>Gallery</a>
+    <a class="sb-link" href="admin-media.html"><span class="ico">🗂️</span>Media Library</a>
+    <a class="sb-link" href="admin-messages.html"><span class="ico">✉️</span>Messages</a>
+    <div class="sb-group-label">Learning Hub</div>
+    <a class="sb-link" href="#"><span class="ico">📝</span>Notes</a>
+    <a class="sb-link" href="#"><span class="ico">📂</span>Resources</a>
+    <a class="sb-link" href="#"><span class="ico">📄</span>Past Papers</a>
+    <div class="sb-group-label">School</div>
+    <a class="sb-link" href="#"><span class="ico">📞</span>Contact Info</a>
+    <a class="sb-link" href="#"><span class="ico">🔗</span>Social Links</a>
+    <a class="sb-link" href="#"><span class="ico">🗓️</span>Important Dates</a>
+    <a class="sb-link" href="#"><span class="ico">🎨</span>Branding</a>
+    <div class="sb-group-label">Settings</div>
+    <a class="sb-link" href="#"><span class="ico">👥</span>Users</a>
+    <a class="sb-link" href="#"><span class="ico">🛡️</span>Roles</a>
+    <a class="sb-link" href="#"><span class="ico">⚙️</span>Settings</a>
+  </aside>
+  <div>
+    <div class="topbar"><h1>Page Content</h1><div class="who"><div class="avatar"></div>Admin <a href="#" onclick="adminSignOut();return false" style="margin-left:10px;color:var(--ink-soft);text-decoration:underline">Sign out</a></div></div>
+    <div class="content">
+      <div class="tabs">
+        <button class="tab-btn active" data-target="s-vision" onclick="switchTab(this)">Vision &amp; Mission</button>
+        <button class="tab-btn" data-target="s-depts" onclick="switchTab(this)">Departments &amp; Subjects</button>
+        <button class="tab-btn" data-target="s-cal" onclick="switchTab(this)">Academic Calendar</button>
+        <button class="tab-btn" data-target="s-admo" onclick="switchTab(this)">Admissions (O-Level)</button>
+        <button class="tab-btn" data-target="s-adma" onclick="switchTab(this)">Admissions (A-Level)</button>
+      </div>
+
+      <div class="section active" id="s-vision">
+        <div class="panel-card">
+          <h3>Vision &amp; Mission</h3>
+          <div class="field"><label>Vision Statement</label><textarea id="vm-vision"></textarea></div>
+          <div class="field"><label>Mission Statement</label><textarea id="vm-mission"></textarea></div>
+          <div class="field"><label>Mission Points (one per line)</label><textarea id="vm-points"></textarea></div>
+          <button class="btn btn-primary" onclick="saveVisionMission()">Save</button><span class="save-status" id="vm-status"></span>
+        </div>
+      </div>
+
+      <div class="section" id="s-depts">
+        <div class="panel-card">
+          <h3>Departments &amp; Subjects</h3>
+          <div class="field"><label>Departments (one per line)</label><textarea id="ds-depts"></textarea></div>
+          <div class="field"><label>O-Level Subjects (one line per group)</label><textarea id="ds-o"></textarea></div>
+          <div class="field"><label>A-Level Subjects (one line per group)</label><textarea id="ds-a"></textarea></div>
+          <button class="btn btn-primary" onclick="saveDepts()">Save</button><span class="save-status" id="ds-status"></span>
+        </div>
+      </div>
+
+      <div class="section" id="s-cal">
+        <div class="panel-card">
+          <h3>Academic Calendar</h3>
+          <div class="hint">Term 1, 2 and 3 dates.</div>
+          <div class="two"><div class="field"><label>Term 1 Opens</label><input type="date" id="cal-t1-open"></div><div class="field"><label>Term 1 Closes</label><input type="date" id="cal-t1-close"></div><div></div></div>
+          <div class="two"><div class="field"><label>Term 2 Opens</label><input type="date" id="cal-t2-open"></div><div class="field"><label>Term 2 Closes</label><input type="date" id="cal-t2-close"></div><div></div></div>
+          <div class="two"><div class="field"><label>Term 3 Opens</label><input type="date" id="cal-t3-open"></div><div class="field"><label>Term 3 Closes</label><input type="date" id="cal-t3-close"></div><div></div></div>
+          <button class="btn btn-primary" onclick="saveCalendar()">Save</button><span class="save-status" id="cal-status"></span>
+        </div>
+      </div>
+
+      <div class="section" id="s-admo">
+        <div class="panel-card">
+          <h3>Admissions — O-Level</h3>
+          <div class="field"><label>Requirements (one per line)</label><textarea id="admo-req"></textarea></div>
+          <div class="field"><label>Application Steps (one per line)</label><textarea id="admo-app"></textarea></div>
+          <div class="field"><label>Fees Note</label><textarea id="admo-fee"></textarea></div>
+          <button class="btn btn-primary" onclick="saveAdmO()">Save</button><span class="save-status" id="admo-status"></span>
+        </div>
+      </div>
+
+      <div class="section" id="s-adma">
+        <div class="panel-card">
+          <h3>Admissions — A-Level</h3>
+          <div class="field"><label>Requirements (one per line)</label><textarea id="adma-req"></textarea></div>
+          <div class="field"><label>Application Steps (one per line)</label><textarea id="adma-app"></textarea></div>
+          <div class="field"><label>Fees Note</label><textarea id="adma-fee"></textarea></div>
+          <button class="btn btn-primary" onclick="saveAdmA()">Save</button><span class="save-status" id="adma-status"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/supabase-client.js"></script>
+<script>
+function switchTab(btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(btn.dataset.target).classList.add('active');
+}
+function lines(text){ return text.split('\n').map(s=>s.trim()).filter(Boolean); }
+function showStatus(id, ok, msg){
+  const el = document.getElementById(id);
+  el.style.color = ok ? '#1e9e64' : '#c94f4f';
+  el.textContent = msg;
+  if(ok) setTimeout(()=> el.textContent='', 2500);
+}
+async function getSetting(key){
+  const { data, error } = await sb.from('site_settings').select('*').eq('key', key).single();
+  return error ? null : data.value;
+}
+async function setSetting(key, value){
+  return await sb.from('site_settings').update({ value }).eq('key', key);
+}
+
+async function loadAll(){
+  const vm = await getSetting('vision_mission');
+  if(vm){
+    document.getElementById('vm-vision').value = vm.vision || '';
+    document.getElementById('vm-mission').value = vm.mission || '';
+    document.getElementById('vm-points').value = (vm.mission_points||[]).join('\n');
+  }
+  const ds = await getSetting('departments_subjects');
+  if(ds){
+    document.getElementById('ds-depts').value = (ds.departments||[]).join('\n');
+    document.getElementById('ds-o').value = (ds.o_level_subjects||[]).join('\n');
+    document.getElementById('ds-a').value = (ds.a_level_subjects||[]).join('\n');
+  }
+  const cal = await getSetting('academic_calendar');
+  if(cal && cal.length >= 3){
+    document.getElementById('cal-t1-open').value = cal[0].opens; document.getElementById('cal-t1-close').value = cal[0].closes;
+    document.getElementById('cal-t2-open').value = cal[1].opens; document.getElementById('cal-t2-close').value = cal[1].closes;
+    document.getElementById('cal-t3-open').value = cal[2].opens; document.getElementById('cal-t3-close').value = cal[2].closes;
+  }
+  const admo = await getSetting('admissions_o_level');
+  if(admo){
+    document.getElementById('admo-req').value = (admo.requirements||[]).join('\n');
+    document.getElementById('admo-app').value = (admo.application_steps||[]).join('\n');
+    document.getElementById('admo-fee').value = admo.fees_note || '';
+  }
+  const adma = await getSetting('admissions_a_level');
+  if(adma){
+    document.getElementById('adma-req').value = (adma.requirements||[]).join('\n');
+    document.getElementById('adma-app').value = (adma.application_steps||[]).join('\n');
+    document.getElementById('adma-fee').value = adma.fees_note || '';
+  }
+}
+
+async function saveVisionMission(){
+  const value = { vision: document.getElementById('vm-vision').value.trim(), mission: document.getElementById('vm-mission').value.trim(), mission_points: lines(document.getElementById('vm-points').value) };
+  const { error } = await setSetting('vision_mission', value);
+  showStatus('vm-status', !error, error ? error.message : 'Saved!');
+}
+async function saveDepts(){
+  const value = { departments: lines(document.getElementById('ds-depts').value), o_level_subjects: lines(document.getElementById('ds-o').value), a_level_subjects: lines(document.getElementById('ds-a').value) };
+  const { error } = await setSetting('departments_subjects', value);
+  showStatus('ds-status', !error, error ? error.message : 'Saved!');
+}
+async function saveCalendar(){
+  const value = [
+    { term:'Term 1', opens: document.getElementById('cal-t1-open').value, closes: document.getElementById('cal-t1-close').value },
+    { term:'Term 2', opens: document.getElementById('cal-t2-open').value, closes: document.getElementById('cal-t2-close').value },
+    { term:'Term 3', opens: document.getElementById('cal-t3-open').value, closes: document.getElementById('cal-t3-close').value }
+  ];
+  const { error } = await setSetting('academic_calendar', value);
+  showStatus('cal-status', !error, error ? error.message : 'Saved!');
+}
+async function saveAdmO(){
+  const value = { requirements: lines(document.getElementById('admo-req').value), application_steps: lines(document.getElementById('admo-app').value), fees_note: document.getElementById('admo-fee').value.trim() };
+  const { error } = await setSetting('admissions_o_level', value);
+  showStatus('admo-status', !error, error ? error.message : 'Saved!');
+}
+async function saveAdmA(){
+  const value = { requirements: lines(document.getElementById('adma-req').value), application_steps: lines(document.getElementById('adma-app').value), fees_note: document.getElementById('adma-fee').value.trim() };
+  const { error } = await setSetting('admissions_a_level', value);
+  showStatus('adma-status', !error, error ? error.message : 'Saved!');
+}
+
+(async ()=>{ const session = await requireAdminAuth(); if(session) loadAll(); })();
+</script>
+</body>
+</html>
