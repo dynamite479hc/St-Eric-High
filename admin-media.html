@@ -229,6 +229,45 @@ async function deleteMedia(id, storagePath){
   await deleteMediaFile(storagePath);
   const { error } = await sb.from('media').delete().eq('id', id);
   if(error){ alert('Could not delete record: ' + error.message); }
+
+  async function handleUpload(event){
+  const files = Array.from(event.target.files);
+  if(files.length === 0) return;
+
+  const statusEl = document.getElementById('upload-status');
+
+  for(const file of files){
+    statusEl.textContent = `Uploading ${file.name}...`;
+
+    try{
+      const result = await uploadToR2(file, 'gallery');
+
+      const imageUrl = result && typeof result.url === 'string' && result.url.startsWith('http')
+        ? result.url
+        : null;
+
+      if (!imageUrl) {
+        throw new Error('Upload succeeded but no valid public URL was returned.');
+      }
+
+      const { error: dbErr } = await sb.from('media').insert({
+        file_name: file.name,
+        storage_path: imageUrl,
+        category: 'Campus',
+        in_gallery: true
+      });
+
+      if (dbErr) {
+        alert(`Uploaded file but could not save its record: ${dbErr.message}`);
+      }
+
+    } catch(e){
+      alert(`Could not upload ${file.name}: ${e.message}`);
+    }
+  }
+
+  statusEl.textContent = 'PNG or JPG · stored in Cloudflare R2';
+  event.target.value = '';
   render();
 }
 
