@@ -22,11 +22,26 @@ async function uploadToR2(file, folder) {
     },
     body: file,
   });
+
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     throw new Error(err.error || `Upload failed (${res.status})`);
   }
-  return res.json(); // { path, url }
+
+  const text = await res.text();
+  let data;
+
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch (e) {
+    throw new Error("Upload response was not valid JSON.");
+  }
+
+  if (!data.url || typeof data.url !== 'string' || !data.url.startsWith('http')) {
+    throw new Error("Upload response did not include a valid public URL.");
+  }
+
+  return data; // { path, url }
 }
 
 // Deletes a file from R2 through the Worker, given the path
@@ -54,7 +69,7 @@ async function deleteFromR2(path) {
 // - new entries: a full R2 URL already (starts with http)
 // - old entries: a Supabase Storage path from before this migration
 function publicUrl(value) {
-  if (!value) return '';
+  if (!value || typeof value !== 'string') return '';
   if (value.startsWith('http')) return value;
   return sb.storage.from('media').getPublicUrl(value).data.publicUrl;
 }
