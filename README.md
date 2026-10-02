@@ -59,3 +59,4 @@ upload or delete files freely. The Worker sits in between: the browser
 sends it the admin's existing Supabase login token, the Worker checks
 that token is valid with Supabase, and only then touches R2. The R2
 credentials themselves stay inside Cloudflare and never reach the client.
+JD
