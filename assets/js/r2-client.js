@@ -37,9 +37,12 @@ async function uploadToR2(file, folder) {
     throw new Error("Upload response was not valid JSON.");
   }
 
-  if (!data.url || typeof data.url !== 'string' || !data.url.startsWith('http')) {
-    throw new Error("Upload response did not include a valid public URL.");
+  if (!data.path || typeof data.path !== 'string') {
+    throw new Error("Upload response did not include a valid path.");
   }
+
+  // Construct the full public URL using the base URL and path
+  data.url = `${R2_PUBLIC_BASE_URL}/${data.path}`;
 
   return data; // { path, url }
 }
