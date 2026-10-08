@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{--navy-900:#0c2540;--navy-800:#123457;--navy-700:#1a4470;--cyan:#2fa8d9;--gold:#f2ac3c;--gold-dark:#d98f22;
     --bg:#ffffff;--panel:#f7f9fb;--ink:#12202f;--ink-soft:#64758a;--line:#e6ebf1;--win:#1e9e64;--loss:#c94f4f;box-sizing:border-box}
@@ -102,7 +103,7 @@
       <a href="contact.html">Contact</a>
     </nav>
     <div style="display:flex;align-items:center;gap:12px">
-      <a class="learn-link" href="#">📘 Learning Hub</a>
+      <a class="learn-link" href="learning-hub.html">📘 Learning Hub</a>
       <button class="menu-btn" aria-label="Menu">☰</button>
     </div>
   </div>
@@ -143,42 +144,7 @@
 
     <div class="panel" id="p-scoreboard">
       <h2>Scoreboard — Recent Results</h2>
-      <div class="match-card">
-        <div class="match-top"><span>⚽ Football · Inter-House</span><span>08 Apr 2026</span></div>
-        <div class="match-teams">
-          <span class="team">Blue House</span>
-          <span class="score">3 – 1</span>
-          <span class="team">Red House</span>
-        </div>
-        <span class="result-badge win">Blue House Won</span>
-      </div>
-      <div class="match-card">
-        <div class="match-top"><span>🏐 Netball · Inter-School</span><span>02 Apr 2026</span></div>
-        <div class="match-teams">
-          <span class="team">St. Eric High</span>
-          <span class="score">28 – 24</span>
-          <span class="team">Hillcrest High</span>
-        </div>
-        <span class="result-badge win">St. Eric High Won</span>
-      </div>
-      <div class="match-card">
-        <div class="match-top"><span>🏀 Basketball · Inter-School</span><span>27 Mar 2026</span></div>
-        <div class="match-teams">
-          <span class="team">St. Eric High</span>
-          <span class="score">45 – 52</span>
-          <span class="team">Oakridge College</span>
-        </div>
-        <span class="result-badge loss">Oakridge College Won</span>
-      </div>
-      <div class="match-card">
-        <div class="match-top"><span>⚽ Football · Inter-House</span><span>20 Mar 2026</span></div>
-        <div class="match-teams">
-          <span class="team">Green House</span>
-          <span class="score">2 – 2</span>
-          <span class="team">Yellow House</span>
-        </div>
-        <span class="result-badge draw">Draw</span>
-      </div>
+      <div id="match-list"><p style="color:var(--ink-soft);font-size:13px">Loading results...</p></div>
     </div>
 
     <div class="panel" id="p-news">
@@ -195,9 +161,7 @@
 
     <div class="panel" id="p-achieve">
       <h2>Sports Achievements</h2>
-      <div class="achieve-row"><span>Inter-House Sports Champions — Blue House</span><span class="d">08 Apr 2026</span></div>
-      <div class="achieve-row"><span>Netball Team — Regional Qualifiers</span><span class="d">02 Apr 2026</span></div>
-      <div class="achieve-row"><span>Athletics — 3 Regional Medals</span><span class="d">Term 1, 2026</span></div>
+      <div id="achieve-list"><p style="color:var(--ink-soft);font-size:13px">Loading achievements...</p></div>
     </div>
   </div>
 </div>
@@ -212,7 +176,7 @@
       <div class="tagline">Excellence in Education, Faith &amp; Community</div>
     </div>
     <div><h4>Quick Links</h4><ul><li>About Us</li><li>Academics</li><li>Admissions</li><li>News &amp; Events</li><li>Contact</li></ul></div>
-    <div><h4>Community</h4><ul><li>Clubs &amp; Robotics</li><li><a href="sports.html">Sports</a></li><li>Learning Hub</li><li>Student Life</li><li>Gallery</li></ul></div>
+    <div><h4>Community</h4><ul><li>Clubs &amp; Robotics</li><li><a href="sports.html">Sports</a></li><li><a href="staff.html">Our Staff</a></li><li>Learning Hub</li><li>Student Life</li><li>Gallery</li></ul></div>
     <div><h4>Contact</h4><ul><li>19 St. Eric Road, Tynwald, Harare</li><li>+263 4 779 129 / 0772 123 456</li><li>info@stelichigh.org</li></ul></div>
   </div>
   <div class="wrap foot-bottom">
@@ -230,6 +194,51 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     document.getElementById(btn.dataset.target).classList.add('active');
   });
 });
+</script>
+
+<script src="assets/js/supabase-client.js"></script>
+<script>
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function formatDate(iso){
+  if(!iso) return '';
+  const d = new Date(iso + 'T00:00:00');
+  return d.toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'});
+}
+function sportIcon(s){
+  return {Football:'⚽',Netball:'🏐',Basketball:'🏀',Athletics:'🏃','Table Tennis':'🏓',Volleyball:'🎾',Rugby:'🏉',Swimming:'🏊'}[s] || '🏆';
+}
+
+async function loadMatches(){
+  const container = document.getElementById('match-list');
+  const { data, error } = await sb.from('matches').select('*').order('match_date', { ascending:false });
+  if(error || !data || data.length === 0){ container.innerHTML = '<p style="color:var(--ink-soft);font-size:13px">No results posted yet.</p>'; return; }
+  container.innerHTML = data.map(m=>{
+    const sA = Number(m.score_a), sB = Number(m.score_b);
+    let badgeClass = 'draw', badgeText = 'Draw';
+    if(sA > sB){ badgeClass='win'; badgeText = `${escapeHtml(m.team_a)} Won`; }
+    else if(sB > sA){ badgeClass='win'; badgeText = `${escapeHtml(m.team_b)} Won`; }
+    return `
+      <div class="match-card">
+        <div class="match-top"><span>${sportIcon(m.sport)} ${escapeHtml(m.sport)} · ${escapeHtml(m.match_type)}</span><span>${formatDate(m.match_date)}</span></div>
+        <div class="match-teams">
+          <span class="team">${escapeHtml(m.team_a)}</span>
+          <span class="score">${sA} – ${sB}</span>
+          <span class="team">${escapeHtml(m.team_b)}</span>
+        </div>
+        <span class="result-badge ${badgeClass}">${badgeText}</span>
+      </div>`;
+  }).join('');
+}
+
+async function loadAchievements(){
+  const container = document.getElementById('achieve-list');
+  const { data, error } = await sb.from('achievements').select('*').eq('category','Sports').order('achievement_date', { ascending:false });
+  if(error || !data || data.length === 0){ container.innerHTML = '<p style="color:var(--ink-soft);font-size:13px">No sports achievements listed yet.</p>'; return; }
+  container.innerHTML = data.map(a => `<div class="achieve-row"><span>${escapeHtml(a.title)}</span><span class="d">${formatDate(a.achievement_date)}</span></div>`).join('');
+}
+
+loadMatches();
+loadAchievements();
 </script>
 </body>
 </html>

@@ -88,7 +88,7 @@
       <a href="contact.html">Contact</a>
     </nav>
     <div style="display:flex;align-items:center;gap:12px">
-      <a class="learn-link" href="#">📘 Learning Hub</a>
+      <a class="learn-link" href="learning-hub.html">📘 Learning Hub</a>
       <button class="menu-btn" aria-label="Menu">☰</button>
     </div>
   </div>
@@ -142,9 +142,7 @@
 
     <div class="panel" id="p-achieve">
       <h2>Student Achievements</h2>
-      <div class="achieve-row"><span>STEM Fair Winners</span><span class="d">12 Apr 2026</span></div>
-      <div class="achieve-row"><span>Inter-House Sports Champions — Blue House</span><span class="d">08 Apr 2026</span></div>
-      <div class="achieve-row"><span>Annual Art Exhibition Success</span><span class="d">01 Apr 2026</span></div>
+      <div id="achieve-list"><p style="color:var(--ink-soft);font-size:13px">Loading achievements...</p></div>
     </div>
   </div>
 </div>
@@ -193,7 +191,19 @@ async function loadClubs(){
       ${c.link_url ? `<a class="club-link" href="${escapeHtml(c.link_url)}">Visit Club Site →</a>` : ''}
     </div>`).join('');
 }
+function formatDate(iso){
+  if(!iso) return '';
+  const d = new Date(iso + 'T00:00:00');
+  return d.toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'});
+}
+async function loadAchievements(){
+  const container = document.getElementById('achieve-list');
+  const { data, error } = await sb.from('achievements').select('*').order('achievement_date', { ascending:false });
+  if(error || !data || data.length === 0){ container.innerHTML = '<p style="color:var(--ink-soft);font-size:13px">No achievements listed yet.</p>'; return; }
+  container.innerHTML = data.map(a => `<div class="achieve-row"><span>${escapeHtml(a.title)}</span><span class="d">${formatDate(a.achievement_date)}</span></div>`).join('');
+}
 loadClubs();
+loadAchievements();
 </script>
 </body>
 </html>

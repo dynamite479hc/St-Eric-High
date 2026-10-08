@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Learning Hub — St. Eric High School</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+  :root{--navy-900:#0c2540;--navy-700:#1a4470;--cyan:#2fa8d9;--gold:#f2ac3c;--bg:#ffffff;--panel:#f7f9fb;--ink:#12202f;--ink-soft:#64758a;--line:#e6ebf1;box-sizing:border-box}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-padding-top:env(safe-area-inset-top,0px)}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  h1,h2,h3,.brand{font-family:'Poppins',system-ui,sans-serif}
+  img{max-width:100%;display:block} a{color:inherit;text-decoration:none}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+  header{position:sticky;top:0;z-index:50;padding-top:env(safe-area-inset-top,0px);background:#fff;border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:20px}
+  .brand-block{display:flex;align-items:center;gap:12px}
+  .crest{width:40px;height:40px;border-radius:50%;overflow:hidden;flex:none;background:var(--panel)}
+  .brand{color:var(--navy-900);font-size:15.5px;font-weight:700;line-height:1.15}
+  .brand small{display:block;font-weight:500;font-size:10.5px;letter-spacing:.06em;color:var(--ink-soft)}
+  nav.links{display:flex;gap:26px;font-size:14.5px;font-weight:500}
+  nav.links a:hover{color:var(--navy-700)}
+  .menu-btn{display:none;background:none;border:1px solid var(--line);padding:7px 10px;border-radius:8px;font-size:18px}
+  @media (max-width:880px){nav.links{display:none}.menu-btn{display:block}}
+
+  .page-hero{position:relative;overflow:hidden;background:linear-gradient(120deg,var(--navy-900) 55%,#1a4470 100%);color:#fff}
+  .page-hero .wrap{padding:44px 24px 36px}
+  .page-hero h1{font-size:28px;font-weight:800}
+  .page-hero p{color:#d8e3ee;font-size:13.5px;margin-top:6px;max-width:46ch}
+  .search-row{margin-top:18px;display:flex;gap:10px;max-width:520px}
+  .search-row input{flex:1;padding:11px 14px;border-radius:8px;border:none;font-size:13.5px;font-family:'Inter'}
+  .search-row button{background:var(--gold);color:var(--navy-900);border:none;border-radius:8px;padding:11px 16px;font-weight:700;font-size:13.5px}
+
+  .tabs-layout{display:grid;grid-template-columns:220px 1fr;gap:32px;padding:44px 0}
+  @media (max-width:820px){.tabs-layout{grid-template-columns:1fr}}
+  .tab-nav{display:flex;flex-direction:column;gap:6px}
+  .tab-btn{text-align:left;padding:12px 16px;border-radius:8px;border:1px solid var(--line);background:#fff;font-size:13.5px;font-weight:600;color:var(--ink-soft);cursor:pointer;font-family:'Inter'}
+  .tab-btn.active{background:var(--navy-700);color:#fff;border-color:var(--navy-700)}
+  .panel{display:none} .panel.active{display:block}
+  .subj-block{margin-bottom:26px}
+  .subj-block h3{font-size:15px;color:var(--navy-900);margin-bottom:10px}
+  .item-card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+  .item-card h4{font-size:13.5px} .item-card p{font-size:12.5px;color:var(--ink-soft)}
+  .dl-btn{font-size:12.5px;font-weight:600;color:var(--navy-700);border:1px solid var(--line);padding:7px 14px;border-radius:20px;white-space:nowrap;background:#fff}
+  .empty{color:var(--ink-soft);font-size:13.5px;padding:20px 0}
+
+  .scilab-card{background:linear-gradient(120deg,var(--navy-900),#1a4470);border-radius:14px;padding:22px;color:#fff;
+    display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-top:10px}
+  .scilab-card h3{font-size:15px;margin-bottom:4px}
+  .scilab-card p{font-size:12.5px;color:#cfe0ee;max-width:40ch}
+  .scilab-card a{background:var(--gold);color:var(--navy-900);font-weight:700;padding:10px 18px;border-radius:8px;font-size:13px;white-space:nowrap}
+
+  footer{background:var(--navy-900);color:#cfe0ee;padding:40px 0 24px;margin-top:20px}
+  .foot-bottom{display:flex;justify-content:center;font-size:12px;color:#7f95a9}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <div class="brand-block">
+      <div class="crest"><img src="assets/logo.png" alt="St. Eric High School logo"></div>
+      <div class="brand">ST. ERIC<br><small>HIGH SCHOOL</small></div>
+    </div>
+    <nav class="links">
+      <a href="index.html">Home</a>
+      <a href="about.html">About Us</a>
+      <a href="academics.html">Academics</a>
+      <a href="admissions.html">Admissions</a>
+      <a href="student-life.html">Student Life</a>
+      <a href="news-events.html">News &amp; Events</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <button class="menu-btn" aria-label="Menu">☰</button>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap">
+    <h1>Learning Hub</h1>
+    <p>Your study companion — notes, resources and past papers for every subject.</p>
+    <div class="search-row">
+      <input type="text" id="search-input" placeholder="Search subjects, notes, or resources...">
+      <button onclick="runSearch()">Search</button>
+    </div>
+  </div>
+</section>
+
+<div class="wrap tabs-layout">
+  <div class="tab-nav">
+    <button class="tab-btn active" data-type="note" onclick="switchType(this)">Notes &amp; Study Guides</button>
+    <button class="tab-btn" data-type="resource" onclick="switchType(this)">Resources</button>
+    <button class="tab-btn" data-type="past_paper" onclick="switchType(this)">Past Papers</button>
+  </div>
+  <div>
+    <div id="content-area"><p class="empty">Loading...</p></div>
+
+    <div class="scilab-card">
+      <div>
+        <h3>🔬 Explore SciLab</h3>
+        <p>An interactive science lab platform used by St. Eric High and other schools — available online and as an offline app.</p>
+      </div>
+      <a href="#">Visit SciLab →</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap foot-bottom">© 2026 St. Eric High School. All rights reserved.</div>
+</footer>
+
+<script src="assets/js/supabase-client.js"></script>
+<script>
+let activeType = 'note';
+let searchTerm = '';
+const TYPE_LABEL = { note:'Notes & Study Guides', resource:'Resources', past_paper:'Past Papers' };
+
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function publicUrl(value){ if(!value) return ''; if(value.startsWith('http')) return value; return sb.storage.from('media').getPublicUrl(value).data.publicUrl; }
+
+function switchType(btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  activeType = btn.dataset.type;
+  loadItems();
+}
+function runSearch(){
+  searchTerm = document.getElementById('search-input').value.trim().toLowerCase();
+  loadItems();
+}
+
+async function loadItems(){
+  const area = document.getElementById('content-area');
+  area.innerHTML = '<p class="empty">Loading...</p>';
+  const { data, error } = await sb.from('learning_hub_items').select('*').eq('type', activeType).order('subject', { ascending:true });
+  if(error || !data || data.length === 0){ area.innerHTML = '<p class="empty">Nothing here yet — check back soon.</p>'; return; }
+
+  let filtered = data;
+  if(searchTerm){
+    filtered = data.filter(i =>
+      i.subject.toLowerCase().includes(searchTerm) ||
+      i.title.toLowerCase().includes(searchTerm) ||
+      (i.description || '').toLowerCase().includes(searchTerm)
+    );
+  }
+  if(filtered.length === 0){ area.innerHTML = '<p class="empty">No matches for your search.</p>'; return; }
+
+  const groups = {};
+  filtered.forEach(i => { (groups[i.subject] = groups[i.subject] || []).push(i); });
+
+  area.innerHTML = Object.keys(groups).map(subject => `
+    <div class="subj-block">
+      <h3>${escapeHtml(subject)}</h3>
+      ${groups[subject].map(i => `
+        <div class="item-card">
+          <div><h4>${escapeHtml(i.title)}</h4>${i.description ? `<p>${escapeHtml(i.description)}</p>` : ''}</div>
+          ${i.file_path ? `<a class="dl-btn" href="${publicUrl(i.file_path)}" target="_blank">Download →</a>` : ''}
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+loadItems();
+</script>
+</body>
+</html>

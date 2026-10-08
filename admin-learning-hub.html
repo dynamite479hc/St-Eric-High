@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>St. Eric CMS — Learning Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+  :root{--navy-900:#0c2540;--navy-700:#1a4470;--gold:#f2ac3c;--bg:#f4f7fa;--panel:#f7f9fb;--ink:#12202f;--ink-soft:#64758a;--line:#e6ebf1;--ok:#1e9e64;--warn:#c94f4f;box-sizing:border-box}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  h1,h2,h3,.brand{font-family:'Poppins',system-ui,sans-serif}
+  a{color:inherit;text-decoration:none} img{max-width:100%;display:block} button{font-family:'Inter'}
+  .shell{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+  @media (max-width:880px){.shell{grid-template-columns:1fr}}
+  .sidebar{background:var(--navy-900);color:#cfe0ee;padding:20px 16px;position:sticky;top:0;height:100vh;overflow-y:auto}
+  @media (max-width:880px){.sidebar{display:none}}
+  .sb-brand{display:flex;align-items:center;gap:10px;padding:6px 6px 20px;border-bottom:1px solid #1e3a5c;margin-bottom:16px}
+  .sb-crest{width:32px;height:32px;border-radius:50%;overflow:hidden;flex:none;background:#fff}
+  .sb-brand span{font-size:13.5px;font-weight:700;color:#fff}
+  .sb-group-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#5c7896;margin:18px 10px 6px}
+  .sb-group-label:first-of-type{margin-top:0}
+  .sb-link{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;font-size:13.5px;font-weight:500;color:#cfe0ee}
+  .sb-link:hover{background:#152f4d} .sb-link.active{background:var(--navy-700);color:#fff;font-weight:600} .sb-link .ico{width:16px;text-align:center;font-size:14px}
+  .topbar{background:#fff;border-bottom:1px solid var(--line);padding:14px 26px;display:flex;justify-content:space-between;align-items:center;padding-top:calc(14px + env(safe-area-inset-top,0px))}
+  .topbar h1{font-size:16px} .topbar .who{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--ink-soft)}
+  .avatar{width:32px;height:32px;border-radius:50%;background:var(--panel);border:1px solid var(--line)}
+  .content{padding:28px 26px 50px}
+  .head-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+  .head-row h2{font-size:20px;color:var(--navy-900)}
+  .tabs{display:flex;gap:8px;margin-bottom:20px}
+  .tab-btn{background:#fff;border:1px solid var(--line);border-radius:20px;padding:8px 16px;font-size:12.5px;font-weight:600;color:var(--ink-soft);cursor:pointer}
+  .tab-btn.active{background:var(--navy-700);color:#fff;border-color:var(--navy-700)}
+  .btn{border:none;border-radius:8px;padding:11px 18px;font-size:13.5px;font-weight:600;cursor:pointer}
+  .btn-primary{background:var(--gold);color:var(--navy-900)} .btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink-soft)} .btn-danger{background:#fbebeb;color:var(--warn)}
+  .item-row{display:flex;justify-content:space-between;align-items:center;gap:16px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin-bottom:10px;flex-wrap:wrap}
+  .item-row h3{font-size:14.5px;margin-bottom:3px} .item-row p{font-size:12.5px;color:var(--ink-soft)}
+  .badge{font-size:11px;font-weight:700;color:var(--navy-700);background:var(--panel);padding:4px 10px;border-radius:12px;margin-right:8px}
+  .file-link{font-size:12px;color:var(--navy-700);margin-top:4px;display:inline-block}
+  .row-actions{display:flex;gap:8px;flex:none}
+  .row-actions button{padding:8px 14px;font-size:12px;border-radius:6px}
+  .empty{padding:40px 0;text-align:center;color:var(--ink-soft);font-size:14px}
+  .overlay{display:none;position:fixed;inset:0;background:rgba(12,37,64,.5);z-index:100;align-items:center;justify-content:center;padding:20px}
+  .overlay.open{display:flex}
+  .modal{background:#fff;border-radius:14px;padding:26px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
+  .modal h3{font-size:16px;margin-bottom:16px;color:var(--navy-900)}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;color:var(--ink-soft)}
+  .field input,.field select,.field textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13.5px;font-family:'Inter';background:var(--panel)}
+  .field textarea{resize:vertical;min-height:70px}
+  .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+  .current-file{font-size:12px;color:var(--ink-soft);margin-bottom:6px}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="sb-brand"><div class="sb-crest"><img src="assets/logo.png" alt="St. Eric High School logo"></div><span>ST. ERIC CMS</span></div>
+    <a class="sb-link" href="admin-dashboard.html"><span class="ico">🏠</span>Dashboard</a>
+    <div class="sb-group-label">Pages</div>
+    <a class="sb-link" href="admin-homepage.html"><span class="ico">🏡</span>Homepage</a>
+    <a class="sb-link" href="admin-history.html"><span class="ico">📜</span>History Timeline</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">🎯</span>Vision &amp; Mission</a>
+    <a class="sb-link" href="admin-leadership.html"><span class="ico">🧑‍💼</span>Leadership</a>
+    <a class="sb-link" href="admin-staff.html"><span class="ico">🧑‍🏫</span>Staff Directory</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">🏛️</span>Departments &amp; Subjects</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">📆</span>Academic Calendar</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">📝</span>Admissions (O &amp; A-Level)</a>
+    <a class="sb-link" href="admin-clubs.html"><span class="ico">🎭</span>Clubs</a>
+    <div class="sb-group-label">Website</div>
+    <a class="sb-link" href="admin-news.html"><span class="ico">📰</span>News</a>
+    <a class="sb-link" href="admin-events.html"><span class="ico">📅</span>Events</a>
+    <a class="sb-link" href="admin-announcements.html"><span class="ico">📣</span>Announcements</a>
+    <a class="sb-link" href="admin-scoreboard.html"><span class="ico">🏆</span>Scoreboard &amp; Results</a>
+    <a class="sb-link" href="admin-achievements.html"><span class="ico">🥇</span>Achievements</a>
+    <a class="sb-link" href="admin-media.html"><span class="ico">🖼️</span>Gallery</a>
+    <a class="sb-link" href="admin-media.html"><span class="ico">🗂️</span>Media Library</a>
+    <a class="sb-link" href="admin-messages.html"><span class="ico">✉️</span>Messages</a>
+    <div class="sb-group-label">Learning Hub</div>
+    <a class="sb-link active" href="admin-learning-hub.html"><span class="ico">📝</span>Notes</a>
+    <a class="sb-link active" href="admin-learning-hub.html"><span class="ico">📂</span>Resources</a>
+    <a class="sb-link active" href="admin-learning-hub.html"><span class="ico">📄</span>Past Papers</a>
+    <div class="sb-group-label">School</div>
+    <a class="sb-link" href="#"><span class="ico">📞</span>Contact Info</a>
+    <a class="sb-link" href="#"><span class="ico">🔗</span>Social Links</a>
+    <a class="sb-link" href="#"><span class="ico">🗓️</span>Important Dates</a>
+    <a class="sb-link" href="#"><span class="ico">🎨</span>Branding</a>
+    <div class="sb-group-label">Settings</div>
+    <a class="sb-link" href="#"><span class="ico">👥</span>Users</a>
+    <a class="sb-link" href="#"><span class="ico">🛡️</span>Roles</a>
+    <a class="sb-link" href="#"><span class="ico">⚙️</span>Settings</a>
+  </aside>
+  <div>
+    <div class="topbar"><h1>Learning Hub</h1><div class="who"><div class="avatar"></div>Admin <a href="#" onclick="adminSignOut();return false" style="margin-left:10px;color:var(--ink-soft);text-decoration:underline">Sign out</a></div></div>
+    <div class="content">
+      <div class="tabs">
+        <button class="tab-btn active" data-type="note" onclick="switchType(this)">Notes</button>
+        <button class="tab-btn" data-type="resource" onclick="switchType(this)">Resources</button>
+        <button class="tab-btn" data-type="past_paper" onclick="switchType(this)">Past Papers</button>
+      </div>
+      <div class="head-row"><h2 id="section-title">Notes</h2><button class="btn btn-primary" onclick="openModal()">+ Add Item</button></div>
+      <div id="item-list"></div>
+      <div id="empty-msg" class="empty" style="display:none">Nothing here yet.</div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h3 id="modal-title">Add Item</h3>
+    <input type="hidden" id="edit-id"><input type="hidden" id="edit-file-path">
+    <div class="field"><label>Subject</label><input type="text" id="f-subject" placeholder="e.g. Mathematics"></div>
+    <div class="field"><label>Title</label><input type="text" id="f-title" placeholder="e.g. Form 4 Algebra Notes"></div>
+    <div class="field"><label>Description (optional)</label><textarea id="f-desc"></textarea></div>
+    <div class="field"><label>File</label>
+      <div class="current-file" id="current-file"></div>
+      <input type="file" id="f-file" accept=".pdf,.doc,.docx,.ppt,.pptx,.jpg,.jpeg,.png">
+    </div>
+    <div class="modal-actions"><button class="btn btn-ghost" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveItem()">Save</button></div>
+  </div>
+</div>
+
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/r2-client.js"></script>
+<script>
+let activeType = 'note';
+const TYPE_LABEL = { note:'Notes', resource:'Resources', past_paper:'Past Papers' };
+
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function switchType(btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  activeType = btn.dataset.type;
+  document.getElementById('section-title').textContent = TYPE_LABEL[activeType];
+  render();
+}
+
+async function getItems(){
+  const { data, error } = await sb.from('learning_hub_items').select('*').eq('type', activeType).order('subject', { ascending:true });
+  if(error){ console.error(error); alert('Could not load items: ' + error.message); return []; }
+  return data;
+}
+
+async function render(){
+  const list = await getItems();
+  const container = document.getElementById('item-list');
+  const emptyMsg = document.getElementById('empty-msg');
+  container.innerHTML = '';
+  if(list.length === 0){ emptyMsg.style.display='block'; return; }
+  emptyMsg.style.display='none';
+  list.forEach(i=>{
+    const row = document.createElement('div');
+    row.className = 'item-row';
+    row.innerHTML = `
+      <div>
+        <span class="badge">${escapeHtml(i.subject)}</span>
+        <h3 style="display:inline">${escapeHtml(i.title)}</h3>
+        ${i.description ? `<p>${escapeHtml(i.description)}</p>` : ''}
+        ${i.file_path ? `<a class="file-link" href="${publicUrl(i.file_path)}" target="_blank">📎 View file</a>` : ''}
+      </div>
+      <div class="row-actions">
+        <button class="btn btn-ghost" onclick="editItem('${i.id}')">Edit</button>
+        <button class="btn btn-danger" onclick="deleteItem('${i.id}')">Delete</button>
+      </div>`;
+    container.appendChild(row);
+  });
+}
+
+function openModal(){
+  document.getElementById('modal-title').textContent = `Add ${TYPE_LABEL[activeType]} Item`;
+  document.getElementById('edit-id').value = ''; document.getElementById('edit-file-path').value = '';
+  document.getElementById('f-subject').value = ''; document.getElementById('f-title').value = ''; document.getElementById('f-desc').value = '';
+  document.getElementById('f-file').value = ''; document.getElementById('current-file').textContent = '';
+  document.getElementById('overlay').classList.add('open');
+}
+async function editItem(id){
+  const list = await getItems(); const i = list.find(x=>x.id===id); if(!i) return;
+  document.getElementById('modal-title').textContent = `Edit ${TYPE_LABEL[activeType]} Item`;
+  document.getElementById('edit-id').value = i.id; document.getElementById('edit-file-path').value = i.file_path || '';
+  document.getElementById('f-subject').value = i.subject; document.getElementById('f-title').value = i.title;
+  document.getElementById('f-desc').value = i.description || '';
+  document.getElementById('f-file').value = '';
+  document.getElementById('current-file').textContent = i.file_path ? 'Current file attached — choose a new one to replace it.' : '';
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal(){ document.getElementById('overlay').classList.remove('open'); }
+
+async function saveItem(){
+  const id = document.getElementById('edit-id').value;
+  const title = document.getElementById('f-title').value.trim();
+  if(!title){ alert('Please enter a title.'); return; }
+  let filePath = document.getElementById('edit-file-path').value;
+  const file = document.getElementById('f-file').files[0];
+  if(file){
+    try{
+      const { url } = await uploadToR2(file, 'learning-hub');
+      filePath = url;
+    }catch(e){ alert('File upload failed: ' + e.message); return; }
+  }
+  const data = {
+    type: activeType,
+    subject: document.getElementById('f-subject').value.trim() || 'General',
+    title,
+    description: document.getElementById('f-desc').value.trim(),
+    file_path: filePath
+  };
+  let error;
+  if(id){ ({ error } = await sb.from('learning_hub_items').update(data).eq('id', id)); }
+  else { ({ error } = await sb.from('learning_hub_items').insert(data)); }
+  if(error){ alert('Could not save: ' + error.message); return; }
+  closeModal(); render();
+}
+async function deleteItem(id){
+  if(!confirm('Delete this item?')) return;
+  const { error } = await sb.from('learning_hub_items').delete().eq('id', id);
+  if(error){ alert('Could not delete: ' + error.message); return; }
+  render();
+}
+
+(async ()=>{ const session = await requireAdminAuth(); if(session) render(); })();
+</script>
+</body>
+</html>
