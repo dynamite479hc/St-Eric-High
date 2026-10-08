@@ -87,7 +87,7 @@
       <a class="active" href="contact.html">Contact</a>
     </nav>
     <div style="display:flex;align-items:center;gap:12px">
-      <a class="learn-link" href="#">📘 Learning Hub</a>
+      <a class="learn-link" href="learning-hub.html">📘 Learning Hub</a>
       <button class="menu-btn" aria-label="Menu">☰</button>
     </div>
   </div>
@@ -103,9 +103,9 @@
 </section>
 
 <div class="wrap info-strip">
-  <div class="info-card"><div class="icon">📍</div><h3>Address</h3><span>Shonhiwa Drive, 4M8F+JVM St Eric, Norton</span></div>
-  <div class="info-card"><div class="icon">📞</div><h3>Phone</h3><span>+263 4 779 129 / 0772 123 456</span></div>
-  <div class="info-card"><div class="icon">✉️</div><h3>Email</h3><span>info@stelichigh.org</span></div>
+  <div class="info-card"><div class="icon">📍</div><h3>Address</h3><span data-site="contact-address">19 St. Eric Road, Tynwald, Harare</span></div>
+  <div class="info-card"><div class="icon">📞</div><h3>Phone</h3><span data-site="contact-phone">+263 4 779 129 / 0772 123 456</span></div>
+  <div class="info-card"><div class="icon">✉️</div><h3>Email</h3><span data-site="contact-email">info@stelichigh.org</span></div>
 </div>
 
 <div class="wrap split">
@@ -122,10 +122,7 @@
   </div>
   <div>
     <h2>Find Us</h2>
-    <div class="map-box"><img src="assets/contact-map.jpg" alt="Map to St. Eric High School">
-    <li><a href="https://www.google.com/maps/place/St+Eric/@-17.8834746,30.6757986,17.12z/data=!4m6!3m5!1s0x193110523350c477:0x21a2706ebde598c2!8m2!3d-17.8834061!4d30.6746677!16s%2Fg%2F11cspdm2ks?entry=ttu&g_ep=EgoyMDI2MTAwNC4wIKXMDSoASAFQAw%3D%3D">maps</a>
-    </li>
-    </div>
+    <div class="map-box"><img src="assets/contact-map.jpg" alt="Map to St. Eric High School"></div>
   </div>
 </div>
 
@@ -136,20 +133,20 @@
         <div class="crest"><img src="assets/logo.png" alt="St. Eric High School logo"></div>
         <div class="brand" style="color:#fff">ST. ERIC<br><small>HIGH SCHOOL</small></div>
       </div>
-      <div class="tagline">Excellence in Education, Faith &amp; Community</div>
+      <div class="tagline" data-site="tagline">Excellence in Education, Faith &amp; Community</div>
     </div>
     <div><h4>Quick Links</h4><ul><li>About Us</li><li>Academics</li><li>Admissions</li><li>News &amp; Events</li><li>Contact</li></ul></div>
-    <div><h4>Community</h4><ul><li>Clubs &amp; Robotics</li><li><a href="sports.html">Sports</a></li><li><a href="staff.html">Our Staff</a></li><li>Learning Hub</li><li>Student Life</li><li>Gallery</li></ul></div>
-    <div><h4>Contact</h4><ul><li>Shonhiwa Drive, 4M8F+JVM St Eric, Norton</li><li>+263 6 22087</li><li>info@sterichigh.co.zw</li></ul></div>
+    <div><h4>Community</h4><ul><li>Clubs &amp; Robotics</li><li><a href="sports.html">Sports</a></li><li><a href="staff.html">Our Staff</a></li><li>Learning Hub</li><li>Student Life</li><li><a href="gallery.html">Gallery</a></li></ul></div>
+    <div><h4>Contact</h4><ul data-site="contact"><li>19 St. Eric Road, Tynwald, Harare</li><li>+263 4 779 129 / 0772 123 456</li><li>info@stelichigh.org</li></ul></div>
   </div>
   <div class="wrap foot-bottom">
-    <span>© 2026 St. Eric High School. All rights reserved.</span>
-    <div>Website By JoyDee Design Studio</div>
+    <span data-site="copyright">© 2026 St. Eric High School. All rights reserved.</span>
     <span>Privacy Policy · Terms of Service</span>
   </div>
 </footer>
 
 <script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/site-settings.js"></script>
 <script>
 document.getElementById('contact-form').addEventListener('submit', async (e)=>{
   e.preventDefault();

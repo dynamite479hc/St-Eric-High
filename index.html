@@ -175,10 +175,10 @@
 
 <div class="quick">
   <div class="wrap">
-    <div class="qcard"><div class="icon">📅</div><div><h3>Upcoming Events</h3><span>View all events →</span></div></div>
-    <div class="qcard"><div class="icon">🏆</div><div><h3>Student Achievements</h3><span>Our proud moments →</span></div></div>
-    <div class="qcard"><div class="icon">🗓️</div><div><h3>Key Dates</h3><span>Important school dates →</span></div></div>
-    <div class="qcard"><div class="icon">🤖</div><div><h3>Clubs &amp; Activities</h3><span>Explore student activities →</span></div></div>
+    <a class="qcard" href="news-events.html"><div class="icon">📅</div><div><h3>Upcoming Events</h3><span>View all events →</span></div></a>
+    <a class="qcard" href="student-life.html"><div class="icon">🏆</div><div><h3>Student Achievements</h3><span>Our proud moments →</span></div></a>
+    <a class="qcard" href="academics.html#calendar"><div class="icon">🗓️</div><div><h3>Key Dates</h3><span>Important school dates →</span></div></a>
+    <a class="qcard" href="student-life.html"><div class="icon">🤖</div><div><h3>Clubs &amp; Activities</h3><span>Explore student activities →</span></div></a>
   </div>
 </div>
 
@@ -265,14 +265,14 @@
   <div class="wrap">
     <div class="section-head">
       <div><h2>Campus Gallery</h2><div class="sub">Explore moments, memories and life at St. Eric High School.</div></div>
-      <a class="view-all" href="#">View Gallery</a>
+      <a class="view-all" href="gallery.html">View Gallery</a>
     </div>
     <div class="gallery-strip" id="gallery-strip">
       <div class="g-item"><img src="assets/gallery-1.jpg" alt="Campus gallery photo"></div>
       <div class="g-item"><img src="assets/gallery-2.jpg" alt="Campus gallery photo"></div>
       <div class="g-item"><img src="assets/gallery-3.jpg" alt="Campus gallery photo"></div>
       <div class="g-item"><img src="assets/gallery-4.jpg" alt="Campus gallery photo"></div>
-      <div class="g-item more">＋ More<span>View Gallery</span></div>
+      <a class="g-item more" href="gallery.html">＋ More<span>View Gallery</span></a>
     </div>
   </div>
 </section>
@@ -284,7 +284,7 @@
         <div class="crest"><img src="assets/logo.png" alt="St. Eric High School logo"></div>
         <div class="brand" style="color:#fff">ST. ERIC<br><small>HIGH SCHOOL</small></div>
       </div>
-      <div class="tagline">Excellence in Education, Faith &amp; Community</div>
+      <div class="tagline" data-site="tagline">Excellence in Education, Faith &amp; Community</div>
     </div>
     <div>
       <h4>Quick Links</h4>
@@ -292,20 +292,21 @@
     </div>
     <div>
       <h4>Community</h4>
-      <ul><li>Clubs &amp; Robotics</li><li><a href="sports.html">Sports</a></li><li><a href="staff.html">Our Staff</a></li><li>Learning Hub</li><li>Student Life</li><li>Gallery</li></ul>
+      <ul><li>Clubs &amp; Robotics</li><li><a href="sports.html">Sports</a></li><li><a href="staff.html">Our Staff</a></li><li>Learning Hub</li><li>Student Life</li><li><a href="gallery.html">Gallery</a></li></ul>
     </div>
     <div>
       <h4>Contact</h4>
-      <ul><li>19 St. Eric Road, Tynwald, Harare</li><li>+263 4 779 129 / 0772 123 456</li><li>info@stelichigh.org</li></ul>
+      <ul data-site="contact"><li>19 St. Eric Road, Tynwald, Harare</li><li>+263 4 779 129 / 0772 123 456</li><li>info@stelichigh.org</li></ul>
     </div>
   </div>
   <div class="wrap foot-bottom">
-    <span>© 2026 St. Eric High School. All rights reserved.</span>
+    <span data-site="copyright">© 2026 St. Eric High School. All rights reserved.</span>
     <span>Privacy Policy · Terms of Service</span>
   </div>
 </footer>
 
 <script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/site-settings.js"></script>
 <script>
 function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -348,7 +349,7 @@ async function loadGallery(){
     const url = m.storage_path.startsWith('http') ? m.storage_path : sb.storage.from('media').getPublicUrl(m.storage_path).data.publicUrl;
     return `<div class="g-item"><img src="${url}" alt="${escapeHtml(m.file_name)}"></div>`;
   }).join('');
-  strip.innerHTML = photos + '<div class="g-item more">＋ More<span>View Gallery</span></div>';
+  strip.innerHTML = photos + '<a class="g-item more" href="gallery.html">＋ More<span>View Gallery</span></a>';
 }
 
 async function loadHomepageContent(){

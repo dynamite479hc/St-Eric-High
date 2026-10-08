@@ -88,7 +88,7 @@
       <a href="contact.html">Contact</a>
     </nav>
     <div style="display:flex;align-items:center;gap:12px">
-      <a class="learn-link" href="#">📘 Learning Hub</a>
+      <a class="learn-link" href="learning-hub.html">📘 Learning Hub</a>
       <button class="menu-btn" aria-label="Menu">☰</button>
     </div>
   </div>
@@ -141,6 +141,7 @@
       <table class="cal" id="calendar-table">
         <tr><th>Term</th><th>Opens</th><th>Closes</th></tr>
       </table>
+      <div id="important-dates" style="margin-top:28px"></div>
     </div>
   </div>
 </div>
@@ -152,14 +153,14 @@
         <div class="crest"><img src="assets/logo.png" alt="St. Eric High School logo"></div>
         <div class="brand" style="color:#fff">ST. ERIC<br><small>HIGH SCHOOL</small></div>
       </div>
-      <div class="tagline">Excellence in Education, Faith &amp; Community</div>
+      <div class="tagline" data-site="tagline">Excellence in Education, Faith &amp; Community</div>
     </div>
     <div><h4>Quick Links</h4><ul><li>About Us</li><li>Academics</li><li>Admissions</li><li>News &amp; Events</li><li>Contact</li></ul></div>
-    <div><h4>Community</h4><ul><li>Clubs &amp; Robotics</li><li><a href="sports.html">Sports</a></li><li><a href="staff.html">Our Staff</a></li><li>Learning Hub</li><li>Student Life</li><li>Gallery</li></ul></div>
-    <div><h4>Contact</h4><ul><li>19 St. Eric Road, Tynwald, Harare</li><li>+263 4 779 129 / 0772 123 456</li><li>info@stelichigh.org</li></ul></div>
+    <div><h4>Community</h4><ul><li>Clubs &amp; Robotics</li><li><a href="sports.html">Sports</a></li><li><a href="staff.html">Our Staff</a></li><li>Learning Hub</li><li>Student Life</li><li><a href="gallery.html">Gallery</a></li></ul></div>
+    <div><h4>Contact</h4><ul data-site="contact"><li>19 St. Eric Road, Tynwald, Harare</li><li>+263 4 779 129 / 0772 123 456</li><li>info@stelichigh.org</li></ul></div>
   </div>
   <div class="wrap foot-bottom">
-    <span>© 2026 St. Eric High School. All rights reserved.</span>
+    <span data-site="copyright">© 2026 St. Eric High School. All rights reserved.</span>
     <span>Privacy Policy · Terms of Service</span>
   </div>
 </footer>
@@ -176,6 +177,7 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
 </script>
 
 <script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/site-settings.js"></script>
 <script>
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function deptIcon(name){
@@ -211,8 +213,20 @@ async function loadCalendar(){
     data.value.map(t => `<tr><td>${escapeHtml(t.term)}</td><td>${formatDate(t.opens)}</td><td>${formatDate(t.closes)}</td></tr>`).join('');
 }
 
+async function loadImportantDates(){
+  const box = document.getElementById('important-dates');
+  const { data, error } = await sb.from('site_settings').select('*').eq('key','important_dates').maybeSingle();
+  if(error || !data || !data.value || data.value.length === 0) return;
+  const rows = data.value.slice().sort((a,b) => a.date.localeCompare(b.date))
+    .map(d => `<tr><td>${escapeHtml(d.label)}</td><td>${formatDate(d.date)}</td></tr>`).join('');
+  box.innerHTML = `<h2 style="font-size:18px;margin-bottom:10px;color:var(--navy-900)">Important Dates</h2>
+    <table class="cal"><tr><th>Event</th><th>Date</th></tr>${rows}</table>`;
+}
+
 loadDeptsSubjects();
 loadCalendar();
+loadImportantDates();
+if(location.hash === '#calendar'){ const b = document.querySelector('[data-target="p-calendar"]'); if(b) b.click(); }
 </script>
 </body>
 </html>
