@@ -1,0 +1,83 @@
+/* ============================================================
+   Shared mobile layout for every public page.
+   Loaded AFTER each page's own <style>, so these rules win.
+   Based on the mobile menu + fit fixes from the homepage.
+   ============================================================ */
+
+/* ---- Never let the page scroll sideways ---- */
+html, body { max-width: 100%; overflow-x: clip; }
+
+/* Let grid/flex children shrink instead of being pushed wider by long text */
+.tabs-layout > *, .two-col > *, .split > *, .info-strip > *, .about > *,
+.foot-grid > *, .staff-grid > *, .code-grid > *, .dept-grid > *,
+.news-grid > *, .gallery-strip > *, .leader-grid > *, .photo-grid > * { min-width: 0; }
+.panel, .t-item, .match-card, .news-row, .item-card, .club-card { min-width: 0; }
+.panel p, .panel li, .panel h2, .news-row h3, .news-row p, .t-item p, .item-card h4, .item-card p,
+footer li, footer .tagline { overflow-wrap: anywhere; }
+.panel { overflow-x: auto; }
+table.cal { min-width: 280px; }
+
+/* ---- Header: hamburger + dropdown menu ---- */
+header .nav { position: relative; }
+.menu-btn { cursor: pointer; line-height: 1; padding: 7px 12px; }
+nav.links .mobile-only { display: none; }
+footer li a { color: inherit; }
+footer li a:hover { color: #fff; text-decoration: underline; }
+
+@media (max-width: 880px) {
+  .menu-btn { display: block; }
+  nav.links {
+    display: none;
+    position: absolute; top: 100%; left: 0; right: 0;
+    flex-direction: column; gap: 0;
+    background: #fff; border-bottom: 1px solid var(--line, #e6ebf1);
+    box-shadow: 0 14px 24px rgba(15, 40, 70, .12);
+    padding: 6px 24px 14px;
+    max-height: calc(100vh - 70px); overflow-y: auto;
+  }
+  nav.links.open { display: flex; }
+  nav.links a { padding: 14px 0; border-bottom: 1px solid var(--line, #e6ebf1); font-size: 15.5px; }
+  nav.links a:last-child { border-bottom: none; }
+  nav.links a.active { border-bottom: 1px solid var(--line, #e6ebf1); padding-bottom: 14px; color: var(--navy-700, #1a4470); font-weight: 600; }
+  nav.links .mobile-only { display: block; }
+  .learn-link { display: none !important; }   /* it lives inside the menu on mobile */
+}
+
+/* ---- Tablet and below ---- */
+@media (max-width: 820px) {
+  .tabs-layout, .split, .two-col, .about { grid-template-columns: minmax(0, 1fr) !important; }
+  .tabs-layout { gap: 18px; padding: 28px 0 44px; }
+  .foot-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .info-strip { grid-template-columns: minmax(0, 1fr); }
+
+  /* Sidebar tabs become a swipeable pill row instead of a tall stack */
+  .tab-nav { flex-direction: row; overflow-x: auto; gap: 8px; padding-bottom: 6px; -webkit-overflow-scrolling: touch; }
+  .tab-btn { flex: none; white-space: nowrap; padding: 10px 14px; }
+  .tab-group-label { flex: none; align-self: center; margin: 0 2px; white-space: nowrap; }
+}
+
+/* ---- Phones ---- */
+@media (max-width: 520px) {
+  .wrap { padding-left: 16px; padding-right: 16px; }
+  header .nav { gap: 10px; padding-top: 10px; padding-bottom: 10px; }
+  .brand { font-size: 14px; }
+  .crest { width: 36px; height: 36px; }
+  nav.links { padding-left: 16px; padding-right: 16px; }
+  .page-hero h1 { font-size: 24px; }
+  .page-hero .wrap, .page-hero .in { padding-top: 32px; padding-bottom: 26px; }
+  .foot-grid { grid-template-columns: minmax(0, 1fr); }
+  .foot-bottom { flex-direction: column; }
+  .panel h2 { font-size: 19px; }
+  .staff-grid, .dept-grid, .code-grid, .leader-grid { gap: 12px; }
+  .match-teams { gap: 6px; }
+  .team { font-size: 13px; }
+  .score { font-size: 17px; padding: 0 6px; }
+  .news-row { gap: 12px; }
+  .news-row .thumb { width: 84px; }
+  .event-row { flex-wrap: wrap; gap: 8px; }
+  .item-card { flex-direction: column; align-items: flex-start; }
+  .timeline::before { left: 11px; }
+  .t-item { padding-left: 40px; }
+  .t-dot { left: 2px; }
+  .lb-prev { left: 6px; } .lb-next { right: 6px; }
+}
