@@ -1,4 +1,4 @@
-# Moving media storage to Cloudflare R2
+# Moving media storage to Cloudflare R2 JD
 
 This replaces Supabase Storage as the home for uploaded photos (staff photos,
 leadership photos, history timeline photos, and the Gallery/Media Library).
