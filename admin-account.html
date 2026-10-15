@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>St. Eric CMS — Users &amp; Settings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+  :root{--navy-900:#0c2540;--navy-700:#1a4470;--gold:#f2ac3c;--bg:#f4f7fa;--panel:#f7f9fb;--ink:#12202f;--ink-soft:#64758a;--line:#e6ebf1;--ok:#1e9e64;--warn:#c94f4f;box-sizing:border-box}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  h1,h2,h3,.brand{font-family:'Poppins',system-ui,sans-serif}
+  a{color:inherit;text-decoration:none} img{max-width:100%;display:block} button{font-family:'Inter'}
+  .shell{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+  @media (max-width:880px){.shell{grid-template-columns:1fr}}
+  .sidebar{background:var(--navy-900);color:#cfe0ee;padding:20px 16px;position:sticky;top:0;height:100vh;overflow-y:auto}
+  @media (max-width:880px){.sidebar{display:none}}
+  .sb-brand{display:flex;align-items:center;gap:10px;padding:6px 6px 20px;border-bottom:1px solid #1e3a5c;margin-bottom:16px}
+  .sb-crest{width:32px;height:32px;border-radius:50%;overflow:hidden;flex:none;background:#fff}
+  .sb-brand span{font-size:13.5px;font-weight:700;color:#fff}
+  .sb-group-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#5c7896;margin:18px 10px 6px}
+  .sb-group-label:first-of-type{margin-top:0}
+  .sb-link{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;font-size:13.5px;font-weight:500;color:#cfe0ee}
+  .sb-link:hover{background:#152f4d} .sb-link.active{background:var(--navy-700);color:#fff;font-weight:600} .sb-link .ico{width:16px;text-align:center;font-size:14px}
+  .topbar{background:#fff;border-bottom:1px solid var(--line);padding:14px 26px;display:flex;justify-content:space-between;align-items:center;padding-top:calc(14px + env(safe-area-inset-top,0px))}
+  .topbar h1{font-size:16px} .topbar .who{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--ink-soft)}
+  .avatar{width:32px;height:32px;border-radius:50%;background:var(--panel);border:1px solid var(--line)}
+  .content{padding:28px 26px 60px;max-width:700px}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+  .tab-btn{background:#fff;border:1px solid var(--line);border-radius:20px;padding:8px 16px;font-size:12.5px;font-weight:600;color:var(--ink-soft);cursor:pointer}
+  .tab-btn.active{background:var(--navy-700);color:#fff;border-color:var(--navy-700)}
+  .section{display:none} .section.active{display:block}
+  .panel-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:22px;margin-bottom:20px}
+  .panel-card h3{font-size:15px;margin-bottom:6px;color:var(--navy-900)}
+  .panel-card .hint{font-size:12px;color:var(--ink-soft);margin-bottom:14px}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:12.5px;font-weight:600;margin-bottom:6px;color:var(--ink-soft)}
+  .field input[type=text],.field input[type=email],.field input[type=date],.field textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13.5px;font-family:'Inter';background:var(--panel)}
+  .btn{border:none;border-radius:8px;padding:11px 20px;font-size:13.5px;font-weight:600;cursor:pointer}
+  .btn-primary{background:var(--gold);color:var(--navy-900)} .btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink-soft)} .btn-danger{background:#fbebeb;color:var(--warn)}
+  .save-status{font-size:12.5px;margin-left:12px}
+  .date-row{display:grid;grid-template-columns:1fr 170px auto;gap:10px;margin-bottom:10px;align-items:center}
+  .date-row input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13.5px;font-family:'Inter';background:var(--panel)}
+  .date-row button{padding:9px 12px;font-size:12px;border-radius:6px}
+  .logo-preview{width:80px;height:80px;border-radius:50%;overflow:hidden;background:var(--panel);border:1px solid var(--line);margin-bottom:10px}
+  .logo-preview img{width:100%;height:100%;object-fit:cover}
+  .check-row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px;align-items:flex-start}
+  .check-row:last-child{border-bottom:none}
+  .check-row .hint2{font-size:12px;color:var(--ink-soft);margin-top:2px}
+  .ok{color:var(--ok);font-weight:700;white-space:nowrap} .bad{color:var(--warn);font-weight:700;white-space:nowrap}
+  .steps{margin:8px 0 14px 18px;font-size:13.5px;color:var(--ink-soft)} .steps li{margin-bottom:6px}
+  .field input[type=password]{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:13.5px;font-family:'Inter';background:var(--panel)}
+  .note-box{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--ink-soft);margin-top:10px}
+</style>
+<link rel="stylesheet" href="assets/css/admin-mobile.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="sb-brand"><div class="sb-crest"><img src="assets/logo.png" alt="St. Eric High School logo"></div><span>ST. ERIC CMS</span></div>
+    <a class="sb-link" href="admin-dashboard.html"><span class="ico">🏠</span>Dashboard</a>
+    <div class="sb-group-label">Pages</div>
+    <a class="sb-link" href="admin-homepage.html"><span class="ico">🏡</span>Homepage</a>
+    <a class="sb-link" href="admin-history.html"><span class="ico">📜</span>History Timeline</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">🎯</span>Vision &amp; Mission</a>
+    <a class="sb-link" href="admin-leadership.html"><span class="ico">🧑‍💼</span>Leadership</a>
+    <a class="sb-link" href="admin-staff.html"><span class="ico">🧑‍🏫</span>Staff Directory</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">🏛️</span>Departments &amp; Subjects</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">📆</span>Academic Calendar</a>
+    <a class="sb-link" href="admin-page-content.html"><span class="ico">📝</span>Admissions (O &amp; A-Level)</a>
+    <a class="sb-link" href="admin-clubs.html"><span class="ico">🎭</span>Clubs</a>
+    <div class="sb-group-label">Website</div>
+    <a class="sb-link" href="admin-news.html"><span class="ico">📰</span>News</a>
+    <a class="sb-link" href="admin-events.html"><span class="ico">📅</span>Events</a>
+    <a class="sb-link" href="admin-announcements.html"><span class="ico">📣</span>Announcements</a>
+    <a class="sb-link" href="admin-scoreboard.html"><span class="ico">🏆</span>Scoreboard &amp; Results</a>
+    <a class="sb-link" href="admin-achievements.html"><span class="ico">🥇</span>Achievements</a>
+    <a class="sb-link" href="admin-media.html"><span class="ico">🖼️</span>Gallery</a>
+    <a class="sb-link" href="admin-media.html"><span class="ico">🗂️</span>Media Library</a>
+    <a class="sb-link" href="admin-messages.html"><span class="ico">✉️</span>Messages</a>
+    <div class="sb-group-label">Learning Hub</div>
+    <a class="sb-link" href="admin-learning-hub.html"><span class="ico">📝</span>Notes</a>
+    <a class="sb-link" href="admin-learning-hub.html"><span class="ico">📂</span>Resources</a>
+    <a class="sb-link" href="admin-learning-hub.html"><span class="ico">📄</span>Past Papers</a>
+    <div class="sb-group-label">School</div>
+    <a class="sb-link" href="admin-school-settings.html#contact"><span class="ico">📞</span>Contact Info</a>
+    <a class="sb-link" href="admin-school-settings.html#social"><span class="ico">🔗</span>Social Links</a>
+    <a class="sb-link" href="admin-school-settings.html#dates"><span class="ico">🗓️</span>Important Dates</a>
+    <a class="sb-link" href="admin-school-settings.html#branding"><span class="ico">🎨</span>Branding</a>
+    <div class="sb-group-label">Settings</div>
+    <a class="sb-link active" href="admin-account.html#users"><span class="ico">👥</span>Users</a>
+    <a class="sb-link active" href="admin-account.html#roles"><span class="ico">🛡️</span>Roles</a>
+    <a class="sb-link active" href="admin-account.html#settings"><span class="ico">⚙️</span>Settings</a>
+  </aside>
+  <div>
+    <div class="topbar"><h1>Users &amp; Settings</h1><div class="who"><div class="avatar"></div>Admin <a href="#" onclick="adminSignOut();return false" style="margin-left:10px;color:var(--ink-soft);text-decoration:underline">Sign out</a></div></div>
+    <div class="content">
+      <div class="tabs">
+        <button class="tab-btn active" data-target="users" onclick="switchTab(this.dataset.target)">Users</button>
+        <button class="tab-btn" data-target="roles" onclick="switchTab(this.dataset.target)">Roles</button>
+        <button class="tab-btn" data-target="settings" onclick="switchTab(this.dataset.target)">Settings</button>
+      </div>
+
+      <div class="section active" id="s-users">
+        <div class="panel-card">
+          <h3>Your account</h3>
+          <div class="hint">Signed in as <strong id="me-email">…</strong></div>
+          <div class="field"><label>New password</label><input type="password" id="pw1" autocomplete="new-password"></div>
+          <div class="field"><label>Confirm new password</label><input type="password" id="pw2" autocomplete="new-password"></div>
+          <button class="btn btn-primary" onclick="changePassword()">Change Password</button><span class="save-status" id="pw-status"></span>
+        </div>
+        <div class="panel-card">
+          <h3>Staff logins</h3>
+          <div class="hint">There is no public sign-up — only people you add here can sign in to the CMS.</div>
+          <ol class="steps">
+            <li>Open your Supabase project's Users page (button below).</li>
+            <li>Click <strong>Add user</strong>, then enter their email and a password.</li>
+            <li>They sign in at <strong>admin-login.html</strong>. To remove someone's access, delete them from the same list.</li>
+          </ol>
+          <a class="btn btn-primary" id="supabase-users-link" href="https://supabase.com/dashboard" target="_blank" rel="noopener" style="display:inline-block">Open Supabase Users →</a>
+        </div>
+      </div>
+
+      <div class="section" id="s-roles">
+        <div class="panel-card">
+          <h3>Roles &amp; permissions</h3>
+          <div class="hint">How access works right now.</div>
+          <div class="note-box">Every account that can sign in currently has <strong>full access</strong> to everything in the CMS — content, media, messages and settings. Roles are not enforced yet, so only give a login to someone you would trust with the whole site.</div>
+          <div class="note-box">The database already has a <code>profiles</code> table with <strong>super_admin</strong> and <strong>editor</strong> roles ready for this. Making them real (for example, editors can post News and Events but can't touch Settings or Messages) is a separate piece of work that can be added later.</div>
+        </div>
+      </div>
+
+      <div class="section" id="s-settings">
+        <div class="panel-card">
+          <h3>Setup check</h3>
+          <div class="hint">Confirms the database tables, saved settings and media uploads are all in place.</div>
+          <div id="checks"><div class="check-row"><span>Running checks…</span></div></div>
+          <div style="margin-top:14px"><button class="btn btn-ghost" onclick="runChecks()">Run again</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/r2-client.js"></script>
+<script>
+const TABS = ['users','roles','settings'];
+function switchTab(name){
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.target === name));
+  document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === 's-' + name));
+  history.replaceState(null, '', '#' + name);
+}
+window.addEventListener('hashchange', () => { const h = location.hash.replace('#',''); if (TABS.includes(h)) switchTab(h); });
+
+function showStatus(id, ok, msg){
+  const el = document.getElementById(id);
+  el.style.color = ok ? '#1e9e64' : '#c94f4f';
+  el.textContent = msg;
+  if (ok) setTimeout(() => el.textContent = '', 3000);
+}
+
+async function changePassword(){
+  const a = document.getElementById('pw1').value, b = document.getElementById('pw2').value;
+  if (a.length < 6) return showStatus('pw-status', false, 'Use at least 6 characters.');
+  if (a !== b) return showStatus('pw-status', false, 'The two passwords do not match.');
+  const { error } = await sb.auth.updateUser({ password: a });
+  if (error) return showStatus('pw-status', false, error.message);
+  document.getElementById('pw1').value = ''; document.getElementById('pw2').value = '';
+  showStatus('pw-status', true, 'Password updated.');
+}
+
+const TABLES = [
+  ['news','schema.sql'],['events','schema.sql'],['announcements','schema.sql'],['matches','schema.sql'],
+  ['achievements','schema.sql'],['media','schema.sql'],['staff','schema.sql'],['leadership','schema.sql'],
+  ['history_timeline','schema.sql'],['clubs','schema.sql'],['messages','schema.sql'],['site_settings','schema.sql'],
+  ['learning_hub_items','learning-hub-schema.sql']
+];
+const SETTING_KEYS = [
+  ['contact_info','schema.sql'],['social_links','schema.sql'],['branding','schema.sql'],
+  ['homepage_content','pages-content-seed.sql'],['vision_mission','pages-content-seed.sql'],
+  ['departments_subjects','pages-content-seed.sql'],['academic_calendar','pages-content-seed.sql'],
+  ['admissions_o_level','pages-content-seed.sql'],['admissions_a_level','pages-content-seed.sql'],
+  ['important_dates','school-settings-seed.sql']
+];
+
+function row(ok, label, hint){
+  return `<div class="check-row"><div>${label}${hint ? `<div class="hint2">${hint}</div>` : ''}</div><span class="${ok ? 'ok' : 'bad'}">${ok ? '✓ OK' : '✗ Problem'}</span></div>`;
+}
+
+async function runChecks(){
+  const box = document.getElementById('checks');
+  box.innerHTML = '<div class="check-row"><span>Running checks…</span></div>';
+  let html = '';
+
+  for (const [t, file] of TABLES){
+    const { error } = await sb.from(t).select('*', { count:'exact', head:true });
+    html += row(!error, `Table <code>${t}</code>`, error ? `Not readable — run supabase/${file}. (${error.message})` : '');
+  }
+  const { data: keys, error: kErr } = await sb.from('site_settings').select('key');
+  const have = new Set((keys || []).map(k => k.key));
+  for (const [k, file] of SETTING_KEYS){
+    html += row(!kErr && have.has(k), `Saved setting <code>${k}</code>`, (!kErr && have.has(k)) ? '' : `Missing — run supabase/${file}.`);
+  }
+
+  const workerSet = typeof R2_WORKER_URL !== 'undefined' && !R2_WORKER_URL.startsWith('YOUR_') && !R2_PUBLIC_BASE_URL.startsWith('YOUR_');
+  html += row(workerSet, 'Media uploads (R2) configured', workerSet ? '' : 'Fill in R2_WORKER_URL and R2_PUBLIC_BASE_URL in assets/js/r2-client.js.');
+  if (workerSet){
+    let reachable = false;
+    try { const r = await fetch(R2_WORKER_URL + '/upload', { method:'OPTIONS' }); reachable = r.ok; } catch(e){}
+    html += row(reachable, 'Media Worker reachable', reachable ? '' : 'The Worker URL did not respond — check it is deployed and the address is right.');
+  }
+  box.innerHTML = html;
+}
+
+(async () => {
+  const session = await requireAdminAuth();
+  if (!session) return;
+  document.getElementById('me-email').textContent = (session.user && session.user.email) || 'unknown';
+  try {
+    const ref = new URL(SUPABASE_URL).hostname.split('.')[0];
+    document.getElementById('supabase-users-link').href = `https://supabase.com/dashboard/project/${ref}/auth/users`;
+  } catch(e){}
+  const h = location.hash.replace('#','');
+  if (TABS.includes(h)) switchTab(h);
+  runChecks();
+})();
+</script>
+<script src="assets/js/admin-mobile.js"></script>
+</body>
+</html>
