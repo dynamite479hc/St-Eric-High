@@ -1,18 +1,36 @@
 /* ============================================================
-   Mobile layout for the CMS. On phones the sidebar becomes a
-   slide-in drawer opened from a ☰ button in the top bar.
-   Loaded AFTER each admin page's own <style>.
+   CMS sidebar behaviour + mobile layout. Loaded AFTER each admin
+   page's own <style>.
+   - Desktop: the panel icon in the sidebar header hides the menu;
+     the same icon in the top bar brings it back (remembered).
+   - Phones: the sidebar is a slide-in drawer, opened by the icon
+     in the top bar and closed by the icon, the backdrop, or a link.
    ============================================================ */
 html, body { max-width: 100%; overflow-x: clip; }
-.admin-menu-btn { display: none; background: none; border: 1px solid #e6ebf1; border-radius: 8px;
-  padding: 6px 11px; font-size: 18px; line-height: 1; cursor: pointer; margin-right: 12px; color: #12202f; }
-.admin-backdrop { display: none; position: fixed; inset: 0; background: rgba(12, 37, 64, .5); z-index: 350; }
-.admin-backdrop.open { display: block; }
 .shell > div { min-width: 0; }
 
+/* panel icon buttons */
+.sb-toggle { margin-left: auto; background: none; border: none; color: #9fb4c9; cursor: pointer;
+  padding: 7px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex: none; }
+.sb-toggle:hover { background: #152f4d; color: #fff; }
+.admin-menu-btn { display: none; align-items: center; justify-content: center; background: none;
+  border: 1px solid #e6ebf1; border-radius: 8px; padding: 7px; cursor: pointer; margin-right: 12px;
+  color: #12202f; flex: none; }
+.admin-menu-btn:hover { background: #f7f9fb; }
+.admin-backdrop { display: none; position: fixed; inset: 0; background: rgba(12, 37, 64, .5); z-index: 350; }
+.admin-backdrop.open { display: block; }
+.topbar h1 { margin-right: auto; }
+
+/* ---- Desktop: collapse the sidebar ---- */
+@media (min-width: 881px) {
+  body.sb-collapsed .sidebar { display: none; }
+  body.sb-collapsed .shell { grid-template-columns: minmax(0, 1fr); }
+  body.sb-collapsed .admin-menu-btn { display: flex; }
+}
+
+/* ---- Phones / tablets: drawer ---- */
 @media (max-width: 880px) {
-  .admin-menu-btn { display: block; }
-  .topbar h1 { margin-right: auto; }
+  .admin-menu-btn { display: flex; }
   .sidebar {
     display: block !important;
     position: fixed !important; top: 0; left: 0; bottom: 0;
@@ -34,11 +52,8 @@ html, body { max-width: 100%; overflow-x: clip; }
 @media (max-width: 520px) {
   .stat-grid { grid-template-columns: minmax(0, 1fr) 1fr; gap: 10px; }
   .quick-actions { grid-template-columns: minmax(0, 1fr) !important; }
-  .topbar .who { font-size: 12.5px; }
-}
-@media (max-width: 520px) {
   .topbar h1 { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-  .topbar .who { flex: none; gap: 6px; }
+  .topbar .who { flex: none; gap: 6px; font-size: 12.5px; }
   .topbar .avatar { display: none; }
-  .admin-menu-btn { margin-right: 8px; flex: none; }
+  .admin-menu-btn { margin-right: 8px; }
 }
