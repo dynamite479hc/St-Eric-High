@@ -71,6 +71,7 @@
     display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;font-family:'Inter'}
   .qa-btn:hover{background:var(--navy-800)}
 </style>
+<link rel="stylesheet" href="assets/css/admin-mobile.css">
 </head>
 <body>
 
@@ -99,26 +100,26 @@
     <a class="sb-link" href="admin-events.html"><span class="ico">📅</span>Events</a>
     <a class="sb-link" href="admin-announcements.html"><span class="ico">📣</span>Announcements</a>
     <a class="sb-link" href="admin-scoreboard.html"><span class="ico">🏆</span>Scoreboard &amp; Results</a>
-    <a class="sb-link" href="#"><span class="ico">🥇</span>Achievements</a>
+    <a class="sb-link" href="admin-achievements.html"><span class="ico">🥇</span>Achievements</a>
     <a class="sb-link" href="admin-media.html"><span class="ico">🖼️</span>Gallery</a>
     <a class="sb-link" href="admin-media.html"><span class="ico">🗂️</span>Media Library</a>
     <a class="sb-link" href="admin-messages.html"><span class="ico">✉️</span>Messages</a>
 
     <div class="sb-group-label">Learning Hub</div>
-    <a class="sb-link" href="#"><span class="ico">📝</span>Notes</a>
-    <a class="sb-link" href="#"><span class="ico">📂</span>Resources</a>
-    <a class="sb-link" href="#"><span class="ico">📄</span>Past Papers</a>
+    <a class="sb-link" href="admin-learning-hub.html"><span class="ico">📝</span>Notes</a>
+    <a class="sb-link" href="admin-learning-hub.html"><span class="ico">📂</span>Resources</a>
+    <a class="sb-link" href="admin-learning-hub.html"><span class="ico">📄</span>Past Papers</a>
 
     <div class="sb-group-label">School</div>
-    <a class="sb-link" href="#"><span class="ico">📞</span>Contact Info</a>
-    <a class="sb-link" href="#"><span class="ico">🔗</span>Social Links</a>
-    <a class="sb-link" href="#"><span class="ico">🗓️</span>Important Dates</a>
-    <a class="sb-link" href="#"><span class="ico">🎨</span>Branding</a>
+    <a class="sb-link" href="admin-school-settings.html#contact"><span class="ico">📞</span>Contact Info</a>
+    <a class="sb-link" href="admin-school-settings.html#social"><span class="ico">🔗</span>Social Links</a>
+    <a class="sb-link" href="admin-school-settings.html#dates"><span class="ico">🗓️</span>Important Dates</a>
+    <a class="sb-link" href="admin-school-settings.html#branding"><span class="ico">🎨</span>Branding</a>
 
     <div class="sb-group-label">Settings</div>
-    <a class="sb-link" href="#"><span class="ico">👥</span>Users</a>
-    <a class="sb-link" href="#"><span class="ico">🛡️</span>Roles</a>
-    <a class="sb-link" href="#"><span class="ico">⚙️</span>Settings</a>
+    <a class="sb-link" href="admin-account.html#users"><span class="ico">👥</span>Users</a>
+    <a class="sb-link" href="admin-account.html#roles"><span class="ico">🛡️</span>Roles</a>
+    <a class="sb-link" href="admin-account.html#settings"><span class="ico">⚙️</span>Settings</a>
   </aside>
 
   <div>
@@ -155,7 +156,7 @@
           <a class="qa-btn" href="admin-media.html" style="text-decoration:none">🖼️ Upload Media</a>
           <a class="qa-btn" href="admin-messages.html" style="text-decoration:none">✉️ View Messages</a>
           <a class="qa-btn" href="admin-scoreboard.html" style="text-decoration:none">🏆 Add Match Result</a>
-          <button class="qa-btn">👥 Manage Users</button>
+          <a class="qa-btn" href="admin-account.html#users" style="text-decoration:none">👥 Manage Users</a>
         </div>
       </div>
     </div>
@@ -197,5 +198,6 @@ async function loadUnreadCount(){
   if(session){ loadRecentNews(); loadUnreadCount(); }
 })();
 </script>
+<script src="assets/js/admin-mobile.js"></script>
 </body>
 </html>

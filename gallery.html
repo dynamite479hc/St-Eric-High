@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gallery — St. Eric High School</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+  :root{--navy-900:#0c2540;--navy-700:#1a4470;--gold:#f2ac3c;--bg:#ffffff;--panel:#f7f9fb;--ink:#12202f;--ink-soft:#64758a;--line:#e6ebf1;box-sizing:border-box}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-padding-top:env(safe-area-inset-top,0px)}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  h1,h2,h3,.brand{font-family:'Poppins',system-ui,sans-serif}
+  img{max-width:100%;display:block} a{color:inherit;text-decoration:none}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+  header{position:sticky;top:0;z-index:50;padding-top:env(safe-area-inset-top,0px);background:#fff;border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:20px}
+  .brand-block{display:flex;align-items:center;gap:12px}
+  .crest{width:40px;height:40px;border-radius:50%;overflow:hidden;flex:none;background:var(--panel)}
+  .crest img{width:100%;height:100%;object-fit:cover}
+  .brand{color:var(--navy-900);font-size:15.5px;font-weight:700;line-height:1.15}
+  .brand small{display:block;font-weight:500;font-size:10.5px;letter-spacing:.06em;color:var(--ink-soft)}
+  nav.links{display:flex;gap:26px;font-size:14.5px;font-weight:500}
+  nav.links a:hover{color:var(--navy-700)}
+  .learn-link{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--navy-700);border:1px solid var(--line);padding:6px 12px;border-radius:20px}
+  .menu-btn{display:none;background:none;border:1px solid var(--line);padding:7px 10px;border-radius:8px;font-size:18px}
+  @media (max-width:880px){nav.links{display:none}.menu-btn{display:block}}
+
+  .page-hero{background:linear-gradient(120deg,var(--navy-900) 55%,#1a4470 100%);color:#fff}
+  .page-hero .wrap{padding:44px 24px 36px}
+  .crumb{font-size:12px;color:#9fb4c9;margin-bottom:8px}
+  .page-hero h1{font-size:30px;font-weight:800}
+  .page-hero p{color:#d8e3ee;font-size:13.5px;margin-top:6px}
+
+  .filters{display:flex;gap:8px;flex-wrap:wrap;padding:32px 0 20px}
+  .filter-btn{background:#fff;border:1px solid var(--line);border-radius:20px;padding:8px 18px;font-size:13px;font-weight:600;color:var(--ink-soft);cursor:pointer;font-family:'Inter'}
+  .filter-btn.active{background:var(--navy-700);color:#fff;border-color:var(--navy-700)}
+
+  .photo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding-bottom:64px}
+  @media (max-width:900px){.photo-grid{grid-template-columns:repeat(3,1fr)}}
+  @media (max-width:560px){.photo-grid{grid-template-columns:repeat(2,1fr);gap:10px}}
+  .photo{aspect-ratio:1/1;border-radius:12px;overflow:hidden;cursor:pointer;background:var(--panel);position:relative}
+  .photo img{width:100%;height:100%;object-fit:cover;transition:transform .25s}
+  .photo:hover img{transform:scale(1.05)}
+  .empty{color:var(--ink-soft);font-size:14px;padding:40px 0;text-align:center;grid-column:1/-1}
+
+  .lightbox{display:none;position:fixed;inset:0;background:rgba(6,18,32,.94);z-index:200;align-items:center;justify-content:center;padding:20px;
+    padding-top:calc(20px + env(safe-area-inset-top,0px));padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))}
+  .lightbox.open{display:flex}
+  .lb-img{max-width:100%;max-height:82vh;border-radius:8px;object-fit:contain}
+  .lb-caption{position:absolute;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:0;right:0;text-align:center;color:#cfe0ee;font-size:12.5px}
+  .lb-btn{position:absolute;background:rgba(255,255,255,.12);border:none;color:#fff;width:42px;height:42px;border-radius:50%;font-size:20px;cursor:pointer}
+  .lb-btn:hover{background:rgba(255,255,255,.25)}
+  .lb-close{top:calc(16px + env(safe-area-inset-top,0px));right:16px}
+  .lb-prev{left:14px;top:50%;transform:translateY(-50%)}
+  .lb-next{right:14px;top:50%;transform:translateY(-50%)}
+
+  footer{background:var(--navy-900);color:#cfe0ee;padding:32px 0 24px}
+  .foot-bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:12px;color:#7f95a9}
+</style>
+<link rel="stylesheet" href="assets/css/site-mobile.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <div class="brand-block">
+      <div class="crest"><img src="assets/logo.png" alt="St. Eric High School logo"></div>
+      <div class="brand">ST. ERIC<br><small>HIGH SCHOOL</small></div>
+    </div>
+    <nav class="links">
+      <a href="index.html">Home</a>
+      <a href="about.html">About Us</a>
+      <a href="academics.html">Academics</a>
+      <a href="admissions.html">Admissions</a>
+      <a href="student-life.html">Student Life</a>
+      <a href="news-events.html">News &amp; Events</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:12px">
+      <a class="learn-link" href="learning-hub.html">📘 Learning Hub</a>
+      <button class="menu-btn" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap">
+    <div class="crumb">Home / Gallery</div>
+    <h1>Gallery</h1>
+    <p>Memories that inspire — moments from campus, events, sports and student life.</p>
+  </div>
+</section>
+
+<div class="wrap">
+  <div class="filters" id="filters"></div>
+  <div class="photo-grid" id="photo-grid"><p class="empty">Loading photos...</p></div>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="lb-btn lb-close" onclick="closeLightbox()" aria-label="Close">✕</button>
+  <button class="lb-btn lb-prev" onclick="stepLightbox(-1)" aria-label="Previous">‹</button>
+  <img class="lb-img" id="lb-img" alt="">
+  <button class="lb-btn lb-next" onclick="stepLightbox(1)" aria-label="Next">›</button>
+  <div class="lb-caption" id="lb-caption"></div>
+</div>
+
+<footer>
+  <div class="wrap foot-bottom">
+    <span data-site="copyright">© 2026 St. Eric High School. All rights reserved.</span>
+    <span>Privacy Policy · Terms of Service</span>
+  </div>
+</footer>
+
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/site-settings.js"></script>
+<script>
+const CATEGORIES = ['Campus','Events','Sports','Students','News','Staff'];
+let allPhotos = [];
+let visible = [];
+let activeFilter = 'All';
+let lbIndex = 0;
+
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function publicUrl(value){ if(!value) return ''; if(value.startsWith('http')) return value; return sb.storage.from('media').getPublicUrl(value).data.publicUrl; }
+
+function renderFilters(){
+  const present = CATEGORIES.filter(c => allPhotos.some(p => p.category === c));
+  document.getElementById('filters').innerHTML = ['All', ...present].map(c =>
+    `<button class="filter-btn ${c===activeFilter?'active':''}" onclick="setFilter('${c}')">${c}</button>`).join('');
+}
+function setFilter(c){ activeFilter = c; renderGrid(); renderFilters(); }
+
+function renderGrid(){
+  visible = activeFilter === 'All' ? allPhotos : allPhotos.filter(p => p.category === activeFilter);
+  const grid = document.getElementById('photo-grid');
+  if(visible.length === 0){ grid.innerHTML = '<p class="empty">No photos here yet — check back soon.</p>'; return; }
+  grid.innerHTML = visible.map((p,i) =>
+    `<div class="photo" onclick="openLightbox(${i})"><img loading="lazy" src="${publicUrl(p.storage_path)}" alt="${escapeHtml(p.file_name)}"></div>`).join('');
+}
+
+async function loadGallery(){
+  const { data, error } = await sb.from('media').select('*').eq('in_gallery', true).order('uploaded_at', { ascending:false });
+  if(error || !data || data.length === 0){ document.getElementById('photo-grid').innerHTML = '<p class="empty">Photos coming soon.</p>'; return; }
+  allPhotos = data;
+  renderFilters();
+  renderGrid();
+}
+
+function openLightbox(i){ lbIndex = i; showLightbox(); document.getElementById('lightbox').classList.add('open'); }
+function closeLightbox(){ document.getElementById('lightbox').classList.remove('open'); }
+function stepLightbox(d){ lbIndex = (lbIndex + d + visible.length) % visible.length; showLightbox(); }
+function showLightbox(){
+  const p = visible[lbIndex];
+  document.getElementById('lb-img').src = publicUrl(p.storage_path);
+  document.getElementById('lb-caption').textContent = `${p.category} · ${lbIndex + 1} of ${visible.length}`;
+}
+document.addEventListener('keydown', e => {
+  if(!document.getElementById('lightbox').classList.contains('open')) return;
+  if(e.key === 'Escape') closeLightbox();
+  if(e.key === 'ArrowLeft') stepLightbox(-1);
+  if(e.key === 'ArrowRight') stepLightbox(1);
+});
+document.getElementById('lightbox').addEventListener('click', e => { if(e.target.id === 'lightbox') closeLightbox(); });
+
+loadGallery();
+</script>
+<script src="assets/js/site-mobile.js"></script>
+</body>
+</html>

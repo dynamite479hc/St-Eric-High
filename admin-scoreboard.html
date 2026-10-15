@@ -71,6 +71,7 @@
   .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
 </style>
+<link rel="stylesheet" href="assets/css/admin-mobile.css">
 </head>
 <body>
 
@@ -96,23 +97,23 @@
     <a class="sb-link" href="admin-events.html"><span class="ico">📅</span>Events</a>
     <a class="sb-link" href="admin-announcements.html"><span class="ico">📣</span>Announcements</a>
     <a class="sb-link active" href="admin-scoreboard.html"><span class="ico">🏆</span>Scoreboard &amp; Results</a>
-    <a class="sb-link" href="#"><span class="ico">🥇</span>Achievements</a>
+    <a class="sb-link" href="admin-achievements.html"><span class="ico">🥇</span>Achievements</a>
     <a class="sb-link" href="admin-media.html"><span class="ico">🖼️</span>Gallery</a>
     <a class="sb-link" href="admin-media.html"><span class="ico">🗂️</span>Media Library</a>
     <a class="sb-link" href="admin-messages.html"><span class="ico">✉️</span>Messages</a>
     <div class="sb-group-label">Learning Hub</div>
-    <a class="sb-link" href="#"><span class="ico">📝</span>Notes</a>
-    <a class="sb-link" href="#"><span class="ico">📂</span>Resources</a>
-    <a class="sb-link" href="#"><span class="ico">📄</span>Past Papers</a>
+    <a class="sb-link" href="admin-learning-hub.html"><span class="ico">📝</span>Notes</a>
+    <a class="sb-link" href="admin-learning-hub.html"><span class="ico">📂</span>Resources</a>
+    <a class="sb-link" href="admin-learning-hub.html"><span class="ico">📄</span>Past Papers</a>
     <div class="sb-group-label">School</div>
-    <a class="sb-link" href="#"><span class="ico">📞</span>Contact Info</a>
-    <a class="sb-link" href="#"><span class="ico">🔗</span>Social Links</a>
-    <a class="sb-link" href="#"><span class="ico">🗓️</span>Important Dates</a>
-    <a class="sb-link" href="#"><span class="ico">🎨</span>Branding</a>
+    <a class="sb-link" href="admin-school-settings.html#contact"><span class="ico">📞</span>Contact Info</a>
+    <a class="sb-link" href="admin-school-settings.html#social"><span class="ico">🔗</span>Social Links</a>
+    <a class="sb-link" href="admin-school-settings.html#dates"><span class="ico">🗓️</span>Important Dates</a>
+    <a class="sb-link" href="admin-school-settings.html#branding"><span class="ico">🎨</span>Branding</a>
     <div class="sb-group-label">Settings</div>
-    <a class="sb-link" href="#"><span class="ico">👥</span>Users</a>
-    <a class="sb-link" href="#"><span class="ico">🛡️</span>Roles</a>
-    <a class="sb-link" href="#"><span class="ico">⚙️</span>Settings</a>
+    <a class="sb-link" href="admin-account.html#users"><span class="ico">👥</span>Users</a>
+    <a class="sb-link" href="admin-account.html#roles"><span class="ico">🛡️</span>Roles</a>
+    <a class="sb-link" href="admin-account.html#settings"><span class="ico">⚙️</span>Settings</a>
   </aside>
 
   <div>
@@ -273,5 +274,6 @@ async function deleteMatch(id){
   if(session) render();
 })();
 </script>
+<script src="assets/js/admin-mobile.js"></script>
 </body>
 </html>

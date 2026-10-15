@@ -48,6 +48,7 @@
   .logo-preview{width:80px;height:80px;border-radius:50%;overflow:hidden;background:var(--panel);border:1px solid var(--line);margin-bottom:10px}
   .logo-preview img{width:100%;height:100%;object-fit:cover}
 </style>
+<link rel="stylesheet" href="assets/css/admin-mobile.css">
 </head>
 <body>
 <div class="shell">
@@ -83,9 +84,9 @@
     <a class="sb-link active" href="admin-school-settings.html#dates"><span class="ico">🗓️</span>Important Dates</a>
     <a class="sb-link active" href="admin-school-settings.html#branding"><span class="ico">🎨</span>Branding</a>
     <div class="sb-group-label">Settings</div>
-    <a class="sb-link" href="#"><span class="ico">👥</span>Users</a>
-    <a class="sb-link" href="#"><span class="ico">🛡️</span>Roles</a>
-    <a class="sb-link" href="#"><span class="ico">⚙️</span>Settings</a>
+    <a class="sb-link" href="admin-account.html#users"><span class="ico">👥</span>Users</a>
+    <a class="sb-link" href="admin-account.html#roles"><span class="ico">🛡️</span>Roles</a>
+    <a class="sb-link" href="admin-account.html#settings"><span class="ico">⚙️</span>Settings</a>
   </aside>
   <div>
     <div class="topbar"><h1>School Settings</h1><div class="who"><div class="avatar"></div>Admin <a href="#" onclick="adminSignOut();return false" style="margin-left:10px;color:var(--ink-soft);text-decoration:underline">Sign out</a></div></div>
@@ -255,5 +256,6 @@ window.addEventListener('hashchange', ()=>{
   if(['contact','social','dates','branding'].includes(hash)) switchTab(hash);
 });
 </script>
+<script src="assets/js/admin-mobile.js"></script>
 </body>
 </html>

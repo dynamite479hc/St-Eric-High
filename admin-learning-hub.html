@@ -54,6 +54,7 @@
   .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
   .current-file{font-size:12px;color:var(--ink-soft);margin-bottom:6px}
 </style>
+<link rel="stylesheet" href="assets/css/admin-mobile.css">
 </head>
 <body>
 <div class="shell">
@@ -84,14 +85,14 @@
     <a class="sb-link active" href="admin-learning-hub.html"><span class="ico">📂</span>Resources</a>
     <a class="sb-link active" href="admin-learning-hub.html"><span class="ico">📄</span>Past Papers</a>
     <div class="sb-group-label">School</div>
-    <a class="sb-link" href="#"><span class="ico">📞</span>Contact Info</a>
-    <a class="sb-link" href="#"><span class="ico">🔗</span>Social Links</a>
-    <a class="sb-link" href="#"><span class="ico">🗓️</span>Important Dates</a>
-    <a class="sb-link" href="#"><span class="ico">🎨</span>Branding</a>
+    <a class="sb-link" href="admin-school-settings.html#contact"><span class="ico">📞</span>Contact Info</a>
+    <a class="sb-link" href="admin-school-settings.html#social"><span class="ico">🔗</span>Social Links</a>
+    <a class="sb-link" href="admin-school-settings.html#dates"><span class="ico">🗓️</span>Important Dates</a>
+    <a class="sb-link" href="admin-school-settings.html#branding"><span class="ico">🎨</span>Branding</a>
     <div class="sb-group-label">Settings</div>
-    <a class="sb-link" href="#"><span class="ico">👥</span>Users</a>
-    <a class="sb-link" href="#"><span class="ico">🛡️</span>Roles</a>
-    <a class="sb-link" href="#"><span class="ico">⚙️</span>Settings</a>
+    <a class="sb-link" href="admin-account.html#users"><span class="ico">👥</span>Users</a>
+    <a class="sb-link" href="admin-account.html#roles"><span class="ico">🛡️</span>Roles</a>
+    <a class="sb-link" href="admin-account.html#settings"><span class="ico">⚙️</span>Settings</a>
   </aside>
   <div>
     <div class="topbar"><h1>Learning Hub</h1><div class="who"><div class="avatar"></div>Admin <a href="#" onclick="adminSignOut();return false" style="margin-left:10px;color:var(--ink-soft);text-decoration:underline">Sign out</a></div></div>
@@ -223,5 +224,6 @@ async function deleteItem(id){
 
 (async ()=>{ const session = await requireAdminAuth(); if(session) render(); })();
 </script>
+<script src="assets/js/admin-mobile.js"></script>
 </body>
 </html>

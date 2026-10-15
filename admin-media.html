@@ -71,6 +71,7 @@
   .m-actions button{padding:5px 10px;font-size:11px;border-radius:6px}
   .empty{padding:40px 0;text-align:center;color:var(--ink-soft);font-size:14px}
 </style>
+<link rel="stylesheet" href="assets/css/admin-mobile.css">
 </head>
 <body>
 
@@ -96,23 +97,23 @@
     <a class="sb-link" href="admin-events.html"><span class="ico">📅</span>Events</a>
     <a class="sb-link" href="admin-announcements.html"><span class="ico">📣</span>Announcements</a>
     <a class="sb-link" href="admin-scoreboard.html"><span class="ico">🏆</span>Scoreboard &amp; Results</a>
-    <a class="sb-link" href="#"><span class="ico">🥇</span>Achievements</a>
+    <a class="sb-link" href="admin-achievements.html"><span class="ico">🥇</span>Achievements</a>
     <a class="sb-link active" href="admin-media.html"><span class="ico">🖼️</span>Gallery</a>
     <a class="sb-link active" href="admin-media.html"><span class="ico">🗂️</span>Media Library</a>
     <a class="sb-link" href="admin-messages.html"><span class="ico">✉️</span>Messages</a>
     <div class="sb-group-label">Learning Hub</div>
-    <a class="sb-link" href="#"><span class="ico">📝</span>Notes</a>
-    <a class="sb-link" href="#"><span class="ico">📂</span>Resources</a>
-    <a class="sb-link" href="#"><span class="ico">📄</span>Past Papers</a>
+    <a class="sb-link" href="admin-learning-hub.html"><span class="ico">📝</span>Notes</a>
+    <a class="sb-link" href="admin-learning-hub.html"><span class="ico">📂</span>Resources</a>
+    <a class="sb-link" href="admin-learning-hub.html"><span class="ico">📄</span>Past Papers</a>
     <div class="sb-group-label">School</div>
-    <a class="sb-link" href="#"><span class="ico">📞</span>Contact Info</a>
-    <a class="sb-link" href="#"><span class="ico">🔗</span>Social Links</a>
-    <a class="sb-link" href="#"><span class="ico">🗓️</span>Important Dates</a>
-    <a class="sb-link" href="#"><span class="ico">🎨</span>Branding</a>
+    <a class="sb-link" href="admin-school-settings.html#contact"><span class="ico">📞</span>Contact Info</a>
+    <a class="sb-link" href="admin-school-settings.html#social"><span class="ico">🔗</span>Social Links</a>
+    <a class="sb-link" href="admin-school-settings.html#dates"><span class="ico">🗓️</span>Important Dates</a>
+    <a class="sb-link" href="admin-school-settings.html#branding"><span class="ico">🎨</span>Branding</a>
     <div class="sb-group-label">Settings</div>
-    <a class="sb-link" href="#"><span class="ico">👥</span>Users</a>
-    <a class="sb-link" href="#"><span class="ico">🛡️</span>Roles</a>
-    <a class="sb-link" href="#"><span class="ico">⚙️</span>Settings</a>
+    <a class="sb-link" href="admin-account.html#users"><span class="ico">👥</span>Users</a>
+    <a class="sb-link" href="admin-account.html#roles"><span class="ico">🛡️</span>Roles</a>
+    <a class="sb-link" href="admin-account.html#settings"><span class="ico">⚙️</span>Settings</a>
   </aside>
 
   <div>
@@ -154,34 +155,22 @@ async function getMedia(){
 async function handleUpload(event){
   const files = Array.from(event.target.files);
   if(files.length === 0) return;
-
   const statusEl = document.getElementById('upload-status');
-
   for(const file of files){
     statusEl.textContent = `Uploading ${file.name}...`;
     try{
-      const result = await uploadToR2(file, 'gallery');
-      const imageUrl = result && typeof result.url === 'string' && result.url.startsWith('http')
-        ? result.url
-        : null;
-
-      if (!imageUrl) {
-        throw new Error('Upload succeeded but no valid public URL was returned.');
-      }
-
+      const { url } = await uploadToR2(file, 'gallery');
       const { error: dbErr } = await sb.from('media').insert({
         file_name: file.name,
-        storage_path: imageUrl,
+        storage_path: url,
         category: 'Campus',
         in_gallery: true
       });
-
       if(dbErr){ alert(`Uploaded file but could not save its record: ${dbErr.message}`); }
     }catch(e){
       alert(`Could not upload ${file.name}: ${e.message}`);
     }
   }
-
   statusEl.textContent = 'PNG or JPG · stored in Cloudflare R2';
   event.target.value = '';
   render();
@@ -197,7 +186,7 @@ function renderFilters(){
 function setFilter(c){ activeFilter = c; render(); }
 
 function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[ch]));
+  return String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 }
 
 async function render(){
@@ -249,5 +238,6 @@ async function deleteMedia(id, storagePath){
   if(session) render();
 })();
 </script>
+<script src="assets/js/admin-mobile.js"></script>
 </body>
 </html>

@@ -84,6 +84,7 @@
   footer .tagline{font-size:12.5px;font-style:italic;color:#7fb8dd;margin-top:10px}
   .foot-bottom{margin-top:36px;padding-top:18px;border-top:1px solid #1e3a5c;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:12px;color:#7f95a9}
 </style>
+<link rel="stylesheet" href="assets/css/site-mobile.css">
 </head>
 <body>
 
@@ -173,14 +174,14 @@
         <div class="crest"><img src="assets/logo.png" alt="St. Eric High School logo"></div>
         <div class="brand" style="color:#fff">ST. ERIC<br><small>HIGH SCHOOL</small></div>
       </div>
-      <div class="tagline">Excellence in Education, Faith &amp; Community</div>
+      <div class="tagline" data-site="tagline">Excellence in Education, Faith &amp; Community</div>
     </div>
-    <div><h4>Quick Links</h4><ul><li>About Us</li><li>Academics</li><li>Admissions</li><li>News &amp; Events</li><li>Contact</li></ul></div>
-    <div><h4>Community</h4><ul><li>Clubs &amp; Robotics</li><li><a href="sports.html">Sports</a></li><li><a href="staff.html">Our Staff</a></li><li>Learning Hub</li><li>Student Life</li><li>Gallery</li></ul></div>
-    <div><h4>Contact</h4><ul><li>19 St. Eric Road, Tynwald, Harare</li><li>+263 4 779 129 / 0772 123 456</li><li>info@stelichigh.org</li></ul></div>
+    <div><h4>Quick Links</h4><ul><li><a href="about.html">About Us</a></li><li><a href="academics.html">Academics</a></li><li><a href="admissions.html">Admissions</a></li><li><a href="news-events.html">News &amp; Events</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+    <div><h4>Community</h4><ul><li><a href="student-life.html">Clubs &amp; Robotics</a></li><li><a href="sports.html">Sports</a></li><li><a href="staff.html">Our Staff</a></li><li><a href="learning-hub.html">Learning Hub</a></li><li><a href="student-life.html">Student Life</a></li><li><a href="gallery.html">Gallery</a></li></ul></div>
+    <div><h4>Contact</h4><ul data-site="contact"><li>19 St. Eric Road, Tynwald, Harare</li><li>+263 4 779 129 / 0772 123 456</li><li>info@stelichigh.org</li></ul></div>
   </div>
   <div class="wrap foot-bottom">
-    <span>© 2026 St. Eric High School. All rights reserved.</span>
+    <span data-site="copyright">© 2026 St. Eric High School. All rights reserved.</span>
     <span>Privacy Policy · Terms of Service</span>
   </div>
 </footer>
@@ -197,6 +198,7 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
 </script>
 
 <script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/site-settings.js"></script>
 <script>
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function formatDate(iso){
@@ -240,5 +242,6 @@ async function loadAchievements(){
 loadMatches();
 loadAchievements();
 </script>
+<script src="assets/js/site-mobile.js"></script>
 </body>
 </html>
